@@ -1,0 +1,15 @@
+if(jQuery(".btn_fullscreen").hasClass("btn_none")){/*不能全屏*/
+    jQuery('.convertTips').remove();
+    jQuery('#html_1').css('padding-top',0);
+}else{
+    jQuery('.btn_fullscreen').click();
+    jQuery('#j_zoomout').click();
+}
+jQuery('.adBox').remove();
+jQuery('.backToTop').remove();
+jQuery('.docin_reader_tools').remove();
+jQuery('#docinShareSlider').remove();
+jQuery('.aside').remove();
+jQuery('.reader_tools_bar_wrap').remove();
+document.getElementById('page_1').scrollIntoView();
+jQuery('#contentcontainer').css('padding-bottom','1000px');
