@@ -3,10 +3,13 @@ package com.cvnavi.downloader;
 
 import com.teamdev.jxbrowser.view.swing.BitmapUtil;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * 下载baidu wenku的文档
@@ -96,21 +99,20 @@ public class BaiduDownloader extends AbstractDownloader {
     }
 
     private void downloadPpt() throws InterruptedException, IOException {
-//        for(int p=1;p<=totalPage;p++){
-//            script="document.getElementsByClassName('reader-pageNo-"+p+"')[0].scrollIntoView();";
-//            SwingUtilities.invokeLater(()->{
-//                browser.executeJavaScript(script);
-//            });
-//            Thread.sleep(1000);
-//
-//            script="$('.reader-pageNo-"+p+" div img').attr('src')";
-//            JSValue value=browser.executeJavaScriptAndReturnValue(script);
-//            if(value!=null){
-//                String imgUrl=value.asString().getValue();
-//                BufferedImage pageImage=ImageIO.read(new URL(imgUrl));
-//                File pageFile=new File(tmpDir+File.separator+p+".png");
-//                ImageIO.write(pageImage, "PNG",pageFile);
-//            }
-//        }
+        for(int p=1;p<=totalPage;p++){
+            script="document.getElementsByClassName('reader-pageNo-"+p+"')[0].scrollIntoView();";
+            SwingUtilities.invokeLater(()->{
+                browser.mainFrame().get().executeJavaScript(script);
+            });
+            Thread.sleep(1000);
+
+            script="$('.reader-pageNo-"+p+" div img').attr('src')";
+            String value=browser.mainFrame().get().executeJavaScript(script);
+            if(value!=null){
+                BufferedImage pageImage= ImageIO.read(new URL(value));
+                File pageFile=new File(tmpDir+File.separator+p+".png");
+                ImageIO.write(pageImage, "PNG",pageFile);
+            }
+        }
     }
 }

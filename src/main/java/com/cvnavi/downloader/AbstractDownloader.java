@@ -65,28 +65,33 @@ public abstract class AbstractDownloader {
     public abstract void download() throws Exception;
 
     public  void prepareDownload(String jsFile){
-        InputStream is=AbstractDownloader.class.getClassLoader().getResourceAsStream(jsFile);
-        String script="";
-        if(is!=null){
-            try(BufferedReader reader=new BufferedReader(new InputStreamReader(is))){
-                String line=null;
-                while((line=reader.readLine())!=null){
-                    script+=line;
+        String script=null;
+        if(jsFile!=null){
+            InputStream is=AbstractDownloader.class.getClassLoader().getResourceAsStream(jsFile);
+            if(is!=null){
+                try(BufferedReader reader=new BufferedReader(new InputStreamReader(is))){
+                    String line=null;
+                    while((line=reader.readLine())!=null){
+                        script+=line;
+                    }
+                }catch (Exception ex){
+                    ex.printStackTrace();
                 }
-            }catch (Exception ex){
-                ex.printStackTrace();
             }
-            if(browser!=null){
-                windowWidth=getJsFloat("window.outerWidth");//包含垂直滚动条
-                windowHeight=getJsFloat("window.innerHeight");//不包含水平滚动条
+        }
+
+        if(browser!=null){
+            windowWidth=getJsFloat("window.outerWidth");//包含垂直滚动条
+            windowHeight=getJsFloat("window.innerHeight");//不包含水平滚动条
+            if(script!=null){
                 browser.mainFrame().get().executeJavaScript(script);
-
-                widget = (Component) browserView.getComponent(0);
-                widgetWidth=widget.getWidth();
-                widgetHeight=widget.getHeight();
-
-                screenScale= BitmapUtil.toBufferedImage(browser.bitmap()).getWidth()/widgetWidth;
             }
+
+            widget = (Component) browserView.getComponent(0);
+            widgetWidth=widget.getWidth();
+            widgetHeight=widget.getHeight();
+
+            screenScale= BitmapUtil.toBufferedImage(browser.bitmap()).getWidth()/widgetWidth;
         }
     }
 

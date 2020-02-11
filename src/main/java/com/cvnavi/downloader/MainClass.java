@@ -99,6 +99,8 @@ public class MainClass {
                 downloader=new BaiduDownloader();
             }else if(textField.getText().contains("docin.com")){
                 downloader=new DocinDownloader();
+            }else if(textField.getText().contains("dangdang.com")){
+                downloader=new DangDangDownloader();
             }
 
             if(downloader!=null){
