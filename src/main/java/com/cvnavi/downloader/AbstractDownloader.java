@@ -65,7 +65,7 @@ public abstract class AbstractDownloader {
     public abstract void download() throws Exception;
 
     public  void prepareDownload(String jsFile){
-        String script=null;
+        String script="";
         if(jsFile!=null){
             InputStream is=AbstractDownloader.class.getClassLoader().getResourceAsStream(jsFile);
             if(is!=null){
@@ -83,7 +83,7 @@ public abstract class AbstractDownloader {
         if(browser!=null){
             windowWidth=getJsFloat("window.outerWidth");//包含垂直滚动条
             windowHeight=getJsFloat("window.innerHeight");//不包含水平滚动条
-            if(script!=null){
+            if(script!=null && script.length()>0){
                 browser.mainFrame().get().executeJavaScript(script);
             }
 
