@@ -101,6 +101,8 @@ public class MainClass {
                 downloader=new DocinDownloader();
             }else if(textField.getText().contains("dangdang.com")){
                 downloader=new DangDangDownloader();
+            }else if(textField.getText().contains("iask.sina.com.cn")){
+                downloader=new IaskDownloader();
             }
 
             if(downloader!=null){
