@@ -27,8 +27,8 @@ public class MainClass {
     static Engine engine;
 
     static {
-        EngineOptions options=EngineOptions.newBuilder(RenderingMode.HARDWARE_ACCELERATED).
-                licenseKey("6P830J66YAHCM54XMVUD3DCA0YKTO6XCC2RU2KDNSUZY77O6UIGL972BC37D1ELCYJNJ").build();
+        JXBrowserCrack.crack();
+        EngineOptions options=EngineOptions.newBuilder(RenderingMode.HARDWARE_ACCELERATED).build();
         engine=Engine.newInstance(options);
     }
 
