@@ -17,6 +17,8 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class MainClass {
 
@@ -125,6 +127,13 @@ public class MainClass {
 
     public void download(){
         if(downloader!=null){
+            for(int i=0;i<100;i++){
+                try {
+                    Files.deleteIfExists(Paths.get(System.getProperty("java.io.tmpdir")+File.separator+i+".png"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             new Thread(()->{
                 try {
                     downloader.download();

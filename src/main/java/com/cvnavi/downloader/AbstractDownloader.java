@@ -136,10 +136,14 @@ public abstract class AbstractDownloader {
                 float documentWidth = document.getPageSize().getWidth();
                 float documentHeight = document.getPageSize().getHeight();
 
-                for(int i=1;i<=totalPage;i++){
-                    Image image=Image.getInstance(tmpDir+File.separator+i+".png");
-                    image.scaleAbsolute(documentWidth, documentHeight);
-                    document.add(image);
+                try{
+                    for(int i=1;i<=totalPage;i++){
+                        Image image=Image.getInstance(tmpDir+File.separator+i+".png");
+                        image.scaleAbsolute(documentWidth, documentHeight);
+                        document.add(image);
+                    }
+                }catch (Exception ex){
+                    JOptionPane.showMessageDialog(null,"生成PDF失败");
                 }
                 document.close();
                 writer.close();

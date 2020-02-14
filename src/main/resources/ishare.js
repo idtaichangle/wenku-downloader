@@ -7,5 +7,6 @@ $("div.icon-vip-share-wrap").remove();
 $("span.reader-fullScreen-no").remove();
 $("div.pc-tui-coupon").remove();
 $(".tui-detail").remove();
+$("div.icon-detail-wrap").remove();
 $(".detail-main").css("padding-bottom","1000px");
 $("body").css("overflow-x","hidden");
