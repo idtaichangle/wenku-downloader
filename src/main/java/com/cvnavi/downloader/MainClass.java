@@ -109,6 +109,10 @@ public class MainClass {
                 downloader=new LddocDownloader();
             }else if(textField.getText().contains("ishare.iask.sina.com.cn")){
                 downloader=new IshareDownloader();
+            }else if(textField.getText().contains("doc.mbalib.com")){
+                downloader=new MbalibDownloader();
+            }else if(textField.getText().contains("max.book118.com")){
+                downloader=new Book118Downloader();
             }
 
 
