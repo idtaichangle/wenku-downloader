@@ -23,7 +23,7 @@ public class IshareDownloader extends AbstractDownloader {
     public int getPageCount() {
         if(totalPage==0){
             String value=browser.mainFrame().get().executeJavaScript("$('.page-input-con span').text();");
-            if(value!=null){
+            if(value!=null && value.length()>0){
                 totalPage=Integer.parseInt(value);
             }
         }

@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.cvnavi.downloader.ImageUtil.isLightGray;
+
 /**
  * 下载 https://www.docin.com/文档
  */
@@ -71,6 +73,7 @@ public class DocinDownloader extends AbstractDownloader{
                 Thread.sleep(500);
                 snapshot(pageImage,i);
             }
+            removeWatermark(pageImage);
             writePageImage(pageImage,p);
         }
 
@@ -108,5 +111,19 @@ public class DocinDownloader extends AbstractDownloader{
         return totalPage;
     }
 
+    private void removeWatermark(BufferedImage bi){
+        for(int x = (int) (bi.getWidth()*0.1); x<bi.getWidth()*0.9; x++){
+            for(int y = (int) (bi.getHeight()*0.35); y<bi.getHeight()*0.65; y++){
+
+                if(isLightGray(bi.getRGB(x,y))
+                        && isLightGray(bi.getRGB(x-1,y))
+                        && isLightGray(bi.getRGB(x+1,y))
+                        && isLightGray(bi.getRGB(x,y-1))
+                        && isLightGray(bi.getRGB(x,y+1))){
+                    bi.setRGB(x,y,0xFFFFFF);
+                }
+            }
+        }
+    }
 
 }

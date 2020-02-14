@@ -4,8 +4,8 @@ import com.teamdev.jxbrowser.dom.Element;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.lang.ref.WeakReference;
 import java.util.Optional;
+import static com.cvnavi.downloader.ImageUtil.isLightGray;
 
 public class LddocDownloader extends AbstractDownloader {
     String type;
@@ -69,9 +69,26 @@ public class LddocDownloader extends AbstractDownloader {
                 Thread.sleep(500);
                 snapshot(pageImage,i);
             }
+            removeWatermark(pageImage);
             writePageImage(pageImage,p);
         }
 
         writePdf();
     }
+
+    private void removeWatermark(BufferedImage bi){
+        for(int x = (int) (bi.getWidth()*0.3); x<bi.getWidth()*0.7; x++){
+            for(int y = (int) (bi.getHeight()*0.4); y<bi.getHeight()*0.5; y++){
+
+                if(isLightGray(bi.getRGB(x,y))
+                        && isLightGray(bi.getRGB(x-1,y))
+                        && isLightGray(bi.getRGB(x+1,y))
+                        && isLightGray(bi.getRGB(x,y-1))
+                        && isLightGray(bi.getRGB(x,y+1))){
+                    bi.setRGB(x,y,0xFFFFFF);
+                }
+            }
+        }
+    }
+
 }
