@@ -101,7 +101,10 @@ public class MainClass {
                 downloader=new DocinDownloader();
             }else if(textField.getText().contains("dangdang.com")){
                 downloader=new DangDangDownloader();
+            }else if(textField.getText().contains("lddoc.cn")){
+                downloader=new LddocDownloader();
             }
+
 
             if(downloader!=null){
                 downloader.setBrowser(browser);
