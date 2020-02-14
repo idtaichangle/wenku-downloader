@@ -103,6 +103,8 @@ public class MainClass {
                 downloader=new DangDangDownloader();
             }else if(textField.getText().contains("lddoc.cn")){
                 downloader=new LddocDownloader();
+            }else if(textField.getText().contains("ishare.iask.sina.com.cn")){
+                downloader=new IshareDownloader();
             }
 
 

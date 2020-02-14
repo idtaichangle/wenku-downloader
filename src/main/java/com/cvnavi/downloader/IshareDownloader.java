@@ -3,7 +3,7 @@ package com.cvnavi.downloader;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 
-public class IaskDownloader extends AbstractDownloader {
+public class IshareDownloader extends AbstractDownloader {
     @Override
     public String getDocType() {
         return null;
@@ -36,7 +36,7 @@ public class IaskDownloader extends AbstractDownloader {
         getPageName();
         getDocType();
 
-        prepareDownload("iask.js");
+        prepareDownload("ishare.js");
 
         pageWidth=getJsFloat("$(\"div[data-num='1']\").width()");
         pageHeight=getJsFloat("$(\"div[data-num='1']\").height()");
