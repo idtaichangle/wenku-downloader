@@ -7,20 +7,18 @@ import com.teamdev.jxbrowser.engine.EngineOptions;
 import com.teamdev.jxbrowser.engine.RenderingMode;
 import com.teamdev.jxbrowser.view.swing.BrowserView;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class MainClass {
+public class BrowserFrame {
 
     JFrame frame;
     JTextField textField=new JTextField();
@@ -31,6 +29,7 @@ public class MainClass {
     BrowserView browserView=null;
     AbstractDownloader downloader=null;
     static Engine engine;
+    private boolean showAddressBar=true;
 
     static {
         JXBrowserCrack.crack();
@@ -38,9 +37,16 @@ public class MainClass {
         engine=Engine.newInstance(options);
     }
 
-    public void showGUI(){
-        final int viewWidth = 1024;
-        final int viewHeight = 20000;
+    public void showGUI(boolean showAddressBar){
+        this.showAddressBar=showAddressBar;
+        if(frame==null || !frame.isShowing()){
+            SwingUtilities.invokeLater(()->{
+                showFrame();
+            });
+        }
+    }
+
+    private void showFrame(){
 
         frame=new JFrame();
         content=new JPanel();
@@ -58,6 +64,12 @@ public class MainClass {
         buttonPanel.add(downloadButton,BorderLayout.EAST);
         north.add(buttonPanel,BorderLayout.EAST);
         content.add(north,BorderLayout.NORTH);
+        north.setVisible(showAddressBar);
+
+        browser=engine.newBrowser();
+        browserView=BrowserView.newInstance(browser);
+        content.add(browserView,BorderLayout.CENTER);
+
 
         textField.addKeyListener(new KeyAdapter() {
             @Override
@@ -81,7 +93,7 @@ public class MainClass {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                System.exit(0);
+//                System.exit(0);
             }
         });
         frame.setTitle("文档下载器");
@@ -89,39 +101,41 @@ public class MainClass {
     }
 
     public void browse(){
-        if(browser==null){
-            browser=engine.newBrowser();
-            browserView=BrowserView.newInstance(browser);
-            content.add(browserView,BorderLayout.CENTER);
-            frame.getRootPane().updateUI();
-        }
         if(textField.getText().length()>0){
+            browse(textField.getText());
+        }
+    }
 
-            browser.navigation().loadUrl(textField.getText());
+    public boolean browse(String url){
+        if(url==null){
+            return false;
+        }
 
-            if(textField.getText().contains("doc88.com")){
-                downloader=new Doc88Downloader();
-            }else if(textField.getText().contains("baidu.com")){
-                downloader=new BaiduDownloader();
-            }else if(textField.getText().contains("docin.com")){
-                downloader=new DocinDownloader();
-            }else if(textField.getText().contains("dangdang.com")){
-                downloader=new DangDangDownloader();
-            }else if(textField.getText().contains("lddoc.cn")){
-                downloader=new LddocDownloader();
-            }else if(textField.getText().contains("ishare.iask.sina.com.cn")){
-                downloader=new IshareDownloader();
-            }else if(textField.getText().contains("doc.mbalib.com")){
-                downloader=new MbalibDownloader();
-            }else if(textField.getText().contains("max.book118.com")){
-                downloader=new Book118Downloader();
-            }
+        browser.navigation().loadUrl(url);
+        if(url.contains("wenku.baidu.com")){
+            downloader=new BaiduDownloader();
+        }else if(url.contains("doc88.com")){
+            downloader=new Doc88Downloader();
+        }else if(url.contains("docin.com")){
+            downloader=new DocinDownloader();
+        }else if(url.contains("dangdang.com")){
+            downloader=new DangDangDownloader();
+        }else if(url.contains("lddoc.cn")){
+            downloader=new LddocDownloader();
+        }else if(url.contains("ishare.iask.sina.com.cn")){
+            downloader=new IshareDownloader();
+        }else if(url.contains("doc.mbalib.com")){
+            downloader=new MbalibDownloader();
+        }else if(url.contains("max.book118.com")){
+            downloader=new Book118Downloader();
+        }
 
-
-            if(downloader!=null){
-                downloader.setBrowser(browser);
-                downloader.setBrowserView(browserView);
-            }
+        if(downloader!=null){
+            downloader.setBrowser(browser);
+            downloader.setBrowserView(browserView);
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -147,6 +161,6 @@ public class MainClass {
 
 
     public static void main(String[] args) {
-        new MainClass().showGUI();
+        new BrowserFrame().showGUI(true);
     }
 }

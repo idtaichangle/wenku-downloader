@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文档下载</title>
+    <script th:replace="head"></script>
+    <style>
+        #container{
+            width: 100%;
+            height: 100%;
+        }
+
+
+        #url{
+            width:60%;
+            margin-left: 20%;
+        }
+    </style>
+</head>
+<body>
+<div id="container" style="display: none">
+    <form id="form1" method="post" action="/">
+        <input id="url" type="text" name="url"><input type="submit" value="预览">
+        <input type="button" onclick="download();" value="下载">
+    </form>
+</div>
+</body>
+<script>
+    $('#form1').submit(function() {
+        $.post("preview",{"url":$("#url").val()},function (result) {
+            console.log(result);
+        });
+        return false;
+    });
+
+    function download() {
+        $.post("submit_download",function (result) {
+            console.log(result);
+        });
+    }
+
+    function resizedw(){
+        var margin=$(window).height()*0.4;
+        $("#form1").css("margin-top",margin);
+    }
+
+    var doit;
+    window.onresize = function(){
+        clearTimeout(doit);
+        doit = setTimeout(resizedw, 100);
+    };
+    $(function () {
+        resizedw();
+        $("#container").show();
+    })
+</script>
+</html>

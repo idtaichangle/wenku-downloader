@@ -6,7 +6,13 @@
 
     <groupId>com.cvnavi</groupId>
     <artifactId>wenku-downloader</artifactId>
+    <packaging>pom</packaging>
     <version>1.0</version>
+
+    <modules>
+        <module>downloader-core</module>
+        <module>downloader-web</module>
+    </modules>
 
     <build>
         <plugins>
@@ -19,77 +25,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <configuration>
-                    <artifactItems>
-                        <artifactItem>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <version>${project.version}</version>
-                            <type>${project.packaging}</type>
-                        </artifactItem>
-                    </artifactItems>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-conf</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>com.teamdev</id>
-            <url>https://maven.teamdev.com/repository/products</url>
-        </repository>
-    </repositories>
-
-    <properties>
-        <jxbrowser.version>7.5</jxbrowser.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.teamdev.jxbrowser</groupId>
-            <artifactId>jxbrowser</artifactId>
-            <version>${jxbrowser.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.teamdev.jxbrowser</groupId>
-            <artifactId>jxbrowser-swing</artifactId>
-            <version>${jxbrowser.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.teamdev.jxbrowser</groupId>
-            <artifactId>jxbrowser-win64</artifactId>
-            <version>${jxbrowser.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>5.5.13</version>
-        </dependency>
-    </dependencies>
 </project>
