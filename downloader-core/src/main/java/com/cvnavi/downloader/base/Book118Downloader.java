@@ -1,6 +1,5 @@
 package com.cvnavi.downloader.base;
 
-import com.cvnavi.downloader.common.DownloaderCallback;
 import com.teamdev.jxbrowser.dom.Element;
 
 import javax.imageio.ImageIO;
@@ -9,8 +8,7 @@ import java.net.URL;
 import java.util.Optional;
 
 public class Book118Downloader extends AbstractDownloader {
-    public Book118Downloader(DownloaderCallback callback) {
-        super(callback);
+    public Book118Downloader(){
         prepareJsFile="book118.js";
     }
 

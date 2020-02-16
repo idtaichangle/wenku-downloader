@@ -23,7 +23,6 @@ public class DownloaderQueue extends LinkedBlockingQueue<DownloadTask>{
                     if(task==STOP_QUEUE_FLAG){
                         break;
                     }else{
-                        browserFrame.browseAndWait(task.getUrl());
                         task.download();
                     }
                 }

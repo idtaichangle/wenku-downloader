@@ -1,7 +1,6 @@
 package com.cvnavi.downloader.base;
 
 
-import com.cvnavi.downloader.common.DownloaderCallback;
 import com.teamdev.jxbrowser.dom.Element;
 
 import java.awt.image.BufferedImage;
@@ -14,8 +13,7 @@ import static com.cvnavi.downloader.util.ImageUtil.isLightGray;
  */
 public class DocinDownloader extends AbstractDownloader{
 
-    public DocinDownloader(DownloaderCallback callback) {
-        super(callback);
+    public DocinDownloader(){
         prepareJsFile="docin.js";
     }
 
@@ -46,14 +44,14 @@ public class DocinDownloader extends AbstractDownloader{
 
         script="document.getElementById('page_"+p+"').scrollIntoView();";
         executeJavaScript(script);
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         int segment=(int)Math.ceil(pageHeight/windowHeight);
 
         for(int i=0;i<segment;i++){
             float scroll=i==0?0:windowHeight;;
             executeJavaScript("window.scrollBy(0,"+scroll+")");
-            Thread.sleep(500);
+            Thread.sleep(100);
             snapshot(pageImage,i);
         }
         removeWatermark(pageImage);

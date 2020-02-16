@@ -1,8 +1,6 @@
 package com.cvnavi.downloader.base;
 
 
-
-import com.cvnavi.downloader.common.DownloaderCallback;
 import com.teamdev.jxbrowser.dom.Element;
 
 import javax.swing.*;
@@ -17,8 +15,7 @@ import java.util.Optional;
  */
 public class Doc88Downloader extends AbstractDownloader{
 
-    public Doc88Downloader(DownloaderCallback callback) {
-        super(callback);
+    public Doc88Downloader() {
         prepareJsFile="doc88.js";
     }
 
@@ -46,7 +43,7 @@ public class Doc88Downloader extends AbstractDownloader{
             SwingUtilities.invokeLater(()->{
                 browser.mainFrame().get().executeJavaScript("window.scrollBy(0,"+scroll+")");
             });
-            Thread.sleep(500);
+            Thread.sleep(100);
             snapshot(pageImage,i);
         }
         return pageImage;

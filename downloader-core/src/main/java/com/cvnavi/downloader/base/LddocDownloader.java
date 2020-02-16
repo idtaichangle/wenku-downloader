@@ -1,17 +1,16 @@
 package com.cvnavi.downloader.base;
 
-import com.cvnavi.downloader.common.DownloaderCallback;
 import com.teamdev.jxbrowser.dom.Element;
 
 import java.awt.image.BufferedImage;
 import java.util.Optional;
+
 import static com.cvnavi.downloader.util.ImageUtil.isLightGray;
 
 public class LddocDownloader extends AbstractDownloader {
     String type;
 
-    public LddocDownloader(DownloaderCallback callback) {
-        super(callback);
+    public LddocDownloader(){
         prepareJsFile="lddoc.js";
     }
 
@@ -69,7 +68,7 @@ public class LddocDownloader extends AbstractDownloader {
         for(int i=0;i<segment;i++){
             float scroll=i==0?0:windowHeight;;
             executeJavaScript("window.scrollBy(0,"+scroll+")");
-            Thread.sleep(500);
+            Thread.sleep(100);
             snapshot(pageImage,i);
         }
         return pageImage;

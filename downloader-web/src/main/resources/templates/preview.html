@@ -7,15 +7,33 @@
 </head>
 <body>
 <div id="container">
-    <img src="img/loading.gif">
-    <button onclick="download();">下载</button>
+    <img id="loading"  src="img/loading.gif">
+    <div id="preview" style="display: none">
+        <button onclick="download();">下载</button>
+    </div>
 </div>
 </body>
 <script>
+    var id=[[${id}]];
     function download() {
         $.post("download",function (result) {
             console.log(result);
         });
     }
+
+    function startWebsocket() {
+        var ws = new WebSocket('ws://' + location.host + '/downloader-ws'+'?id='+id);
+        ws.onmessage = function (result) {
+            var json = JSON.parse(result.data);
+            if(json.success){
+                $("#loading").hide();
+                $("#preview").show();
+            }
+        }
+    }
+
+    $(function () {
+        startWebsocket();
+    });
 </script>
 </html>

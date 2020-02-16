@@ -1,28 +1,27 @@
 package com.cvnavi.downloader.base;
 
-import com.cvnavi.downloader.common.DownloaderCallback;
 
 public class DownloaderSelector {
 
-    public static AbstractDownloader select(String url, DownloaderCallback callback){
+    public static AbstractDownloader select(String url){
         AbstractDownloader downloader=null;
 
         if(url.contains("wenku.baidu.com")){
-            downloader=new BaiduDownloader(callback);
+            downloader=new BaiduDownloader();
         }else if(url.contains("doc88.com")){
-            downloader=new Doc88Downloader(callback);
+            downloader=new Doc88Downloader();
         }else if(url.contains("docin.com")){
-            downloader=new DocinDownloader(callback);
+            downloader=new DocinDownloader();
         }else if(url.contains("dangdang.com")){
-            downloader=new DangDangDownloader(callback);
+            downloader=new DangDangDownloader();
         }else if(url.contains("lddoc.cn")){
-            downloader=new LddocDownloader(callback);
+            downloader=new LddocDownloader();
         }else if(url.contains("ishare.iask.sina.com.cn")){
-            downloader=new IshareDownloader(callback);
+            downloader=new IshareDownloader();
         }else if(url.contains("doc.mbalib.com")){
-            downloader=new MbalibDownloader(callback);
+            downloader=new MbalibDownloader();
         }else if(url.contains("max.book118.com")){
-            downloader=new Book118Downloader(callback);
+            downloader=new Book118Downloader();
         }
         return downloader;
     }

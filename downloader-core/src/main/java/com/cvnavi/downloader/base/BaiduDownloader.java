@@ -1,8 +1,6 @@
 package com.cvnavi.downloader.base;
 
 
-import com.cvnavi.downloader.common.DownloaderCallback;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -12,8 +10,7 @@ import java.net.URL;
  */
 public class BaiduDownloader extends AbstractDownloader {
 
-    public BaiduDownloader(DownloaderCallback callback) {
-        super(callback);
+    public BaiduDownloader(){
         prepareJsFile="baidu.js";
     }
 
@@ -51,7 +48,7 @@ public class BaiduDownloader extends AbstractDownloader {
             for(int i=0;i<segment;i++){
                 int scroll= (i==0?0: (int) windowHeight);
                 executeJavaScript("window.scrollBy(0,"+scroll+")");
-                Thread.sleep(1000);
+                Thread.sleep(100);
                 snapshot(pageImage,i);
             }
             return pageImage;
@@ -84,7 +81,9 @@ public class BaiduDownloader extends AbstractDownloader {
             String value=executeJavaScript("$('.page-count').text()");
             if(value!=null){
                 String pages=value.replace("/","");
-                totalPage=Integer.parseInt(pages);
+                if(pages.length()>0){
+                    totalPage=Integer.parseInt(pages);
+                }
             }
         }
         return totalPage;

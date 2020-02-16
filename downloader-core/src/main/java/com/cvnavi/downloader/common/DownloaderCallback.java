@@ -1,5 +1,5 @@
 package com.cvnavi.downloader.common;
 
 public interface DownloaderCallback {
-    void downloadFinish(boolean success);
+    void downloadFinish(DownloadTask task, boolean success);
 }

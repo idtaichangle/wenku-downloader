@@ -3,6 +3,7 @@ package com.cvnavi.downloader.common;
 import com.cvnavi.downloader.Config;
 import com.cvnavi.downloader.base.AbstractDownloader;
 import com.cvnavi.downloader.base.DownloaderSelector;
+import com.cvnavi.downloader.browser.BrowserFrame;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,14 +26,34 @@ public class DownloadTask {
     @Getter @Setter
     private DownloaderCallback callback;
 
+    private boolean downloading=false;
+
     public void download(){
-        AbstractDownloader downloader= DownloaderSelector.select(url,callback);
+        downloading=false;
+        BrowserFrame.instance().browse(getUrl(),(event)->{
+            if(!downloading){//防止多次出发LoadFinished事件。
+                downloading=true;
+                doDownload();
+            }
+        });
+    }
+
+    private void doDownload(){
+        AbstractDownloader downloader= DownloaderSelector.select(url);
         if(downloader!=null){
             try {
+                log.debug("begin download "+url);
                 clearTmpDir();
                 downloader.download();
+                if(callback!=null){
+                    callback.downloadFinish(this,true);
+                }
+                log.debug("finish download "+url);
             } catch (Exception e) {
                 log.error(e.getMessage(),e);
+                if(callback!=null){
+                    callback.downloadFinish(this,false);
+                }
             }
         }
     }

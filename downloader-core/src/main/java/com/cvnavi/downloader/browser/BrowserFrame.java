@@ -4,9 +4,13 @@ package com.cvnavi.downloader.browser;
 import com.cvnavi.downloader.common.DownloadTask;
 import com.cvnavi.downloader.common.DownloaderQueue;
 import com.teamdev.jxbrowser.browser.Browser;
-import com.teamdev.jxbrowser.engine.Engine;
-import com.teamdev.jxbrowser.engine.EngineOptions;
-import com.teamdev.jxbrowser.engine.RenderingMode;
+import com.teamdev.jxbrowser.engine.*;
+import com.teamdev.jxbrowser.event.Observer;
+import com.teamdev.jxbrowser.navigation.Navigation;
+import com.teamdev.jxbrowser.navigation.event.FrameDocumentLoadFinished;
+import com.teamdev.jxbrowser.navigation.event.FrameLoadFinished;
+import com.teamdev.jxbrowser.navigation.event.LoadFinished;
+import com.teamdev.jxbrowser.navigation.event.NavigationEvent;
 import com.teamdev.jxbrowser.time.Timestamp;
 import com.teamdev.jxbrowser.view.swing.BrowserView;
 import lombok.Getter;
@@ -14,6 +18,10 @@ import lombok.extern.log4j.Log4j2;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class BrowserFrame {
@@ -60,15 +68,29 @@ public class BrowserFrame {
             });
         }
     }
-    public void browse(String url){
-        if(url!=null){
-            browser.navigation().loadUrl(url);
-        }
+
+    public synchronized void browse(String url){
+        browse(url,null);
     }
 
-    public void browseAndWait(String url){
+    public synchronized void browse(String url,Observer<NavigationEvent> observer){
         if(url!=null){
-            browser.navigation().loadUrlAndWait(url, Timestamp.fromSeconds(30));
+            Navigation nav= browser.navigation();
+            CountDownLatch latch = new CountDownLatch(1);
+            nav.on(LoadFinished.class, (event)->{
+                latch.countDown();
+            });
+            SwingUtilities.invokeLater(()->{
+                nav.loadUrl(url);
+            });
+
+            if(observer!=null){
+                try {
+                    latch.await(30L, TimeUnit.SECONDS);
+                } catch (InterruptedException var19) {
+                }
+                observer.on(null);
+            }
         }
     }
 
@@ -94,7 +116,7 @@ public class BrowserFrame {
     public static void main(String[] args) {
         BrowserFrame.instance().showFrame();
         SwingUtilities.invokeLater(()->{
-            BrowserFrame.instance().browse("http://www.baidu.com");
+            BrowserFrame.instance().browse("http://www.baidu.com",null);
         });
     }
 }

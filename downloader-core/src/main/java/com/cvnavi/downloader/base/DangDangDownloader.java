@@ -1,6 +1,5 @@
 package com.cvnavi.downloader.base;
 
-import com.cvnavi.downloader.common.DownloaderCallback;
 import com.teamdev.jxbrowser.ui.KeyCode;
 import com.teamdev.jxbrowser.ui.Point;
 import com.teamdev.jxbrowser.ui.event.KeyPressed;
@@ -9,8 +8,8 @@ import com.teamdev.jxbrowser.ui.event.MouseWheel;
 import java.awt.image.BufferedImage;
 
 public class DangDangDownloader extends AbstractDownloader {
-    public DangDangDownloader(DownloaderCallback callback) {
-        super(callback);
+    public DangDangDownloader(){
+        super();
     }
 
     @Override

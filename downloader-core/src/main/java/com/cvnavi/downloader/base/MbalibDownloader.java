@@ -1,14 +1,11 @@
 package com.cvnavi.downloader.base;
 
-import com.cvnavi.downloader.common.DownloaderCallback;
-
 import java.awt.image.BufferedImage;
 
 public class MbalibDownloader extends AbstractDownloader {
     String docType;
 
-    public MbalibDownloader(DownloaderCallback callback) {
-        super(callback);
+    public MbalibDownloader(){
         prepareJsFile="mbalib.js";
     }
 
@@ -61,7 +58,7 @@ public class MbalibDownloader extends AbstractDownloader {
         for(int i=0;i<segment;i++){
             float scroll=i==0?0:windowHeight;;
             executeJavaScript("window.scrollBy(0,"+scroll+")");
-            Thread.sleep(500);
+            Thread.sleep(100);
             snapshot(pageImage,i);
         }
         writePageImage(pageImage,p);

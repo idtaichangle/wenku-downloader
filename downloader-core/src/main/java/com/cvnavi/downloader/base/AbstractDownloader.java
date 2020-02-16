@@ -1,7 +1,6 @@
 package com.cvnavi.downloader.base;
 
 import com.cvnavi.downloader.Config;
-import com.cvnavi.downloader.common.DownloaderCallback;
 import com.cvnavi.downloader.browser.BrowserFrame;
 import com.cvnavi.downloader.util.ResourceReader;
 import com.itextpdf.text.Document;
@@ -37,11 +36,6 @@ public abstract class AbstractDownloader {
 
     Browser browser= BrowserFrame.instance().getBrowser();
 
-    private DownloaderCallback callback;
-
-    public AbstractDownloader(DownloaderCallback callback){
-        this.callback=callback;
-    }
 
     public abstract String getPageName();
 
@@ -65,15 +59,15 @@ public abstract class AbstractDownloader {
             executeJavaScript(script);
         }
 
-        Component widget = (Component) BrowserFrame.instance().getBrowserView().getComponent(0);
+        Component widget = BrowserFrame.instance().getBrowserView().getComponent(0);
 
-        screenScale= BitmapUtil.toBufferedImage(browser.bitmap()).getWidth()/widget.getWidth();
+        screenScale= BitmapUtil.toBufferedImage(browser.bitmap()).getWidth()/(float)widget.getWidth();
     }
 
     public void download() throws Exception {
         prepareDownload();
 
-        Thread.sleep(1000);
+        Thread.sleep(100);
 
         for(int p=1;p<=totalPage;p++){
             BufferedImage pageImage=downloadPage(p);
@@ -133,22 +127,12 @@ public abstract class AbstractDownloader {
                     image.scaleAbsolute(documentWidth, documentHeight);
                     document.add(image);
                 }
-                if(callback!=null){
-                    callback.downloadFinish(true);
-                }
             }catch (Exception ex){
                 log.error(ex.getMessage());
-                if(callback!=null){
-                    callback.downloadFinish(false);
-                }
             }
             document.close();
             writer.close();
-
         }else{
-            if(callback!=null){
-                callback.downloadFinish(false);
-            }
         }
     }
 }
