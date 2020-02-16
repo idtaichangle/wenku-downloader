@@ -1,6 +1,7 @@
 package com.cvnavi.downloader.web;
 
-import com.cvnavi.downloader.BrowserFrame;
+import com.cvnavi.downloader.browser.BrowserFrame;
+import com.cvnavi.downloader.common.DownloadTask;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,13 +17,23 @@ public class IndexController extends BaseController{
 
     @RequestMapping(value = "/preview",method = RequestMethod.POST)
     public Object preview(String url){
-        Application.browser.browse(url);
-        return result(true);
+        if(url!=null){
+            url=url.toLowerCase().trim();
+            if(!url.startsWith("http://") && !url.startsWith("https://")){
+                url="http://"+url;
+            }
+        }
+
+        DownloadTask task=new DownloadTask();
+        task.setId(1);
+        task.setUrl(url);
+        BrowserFrame.instance().submitDownloadTask(task);
+        return new ModelAndView("preview");
     }
 
-    @RequestMapping(value = "/submit_download",method = RequestMethod.POST)
-    public Object submitDownload(String url){
-        Application.browser.download();
+    @RequestMapping(value = "/download",method = RequestMethod.POST)
+    public Object download(String url){
+//        BrowserFrame.instance().download(null);
         return result(true);
     }
 }

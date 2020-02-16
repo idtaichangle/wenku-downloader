@@ -1,4 +1,4 @@
-package com.cvnavi.downloader;
+package com.cvnavi.downloader.browser;
 
 import java.io.File;
 import java.io.FilenameFilter;

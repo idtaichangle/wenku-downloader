@@ -1,4 +1,4 @@
-package com.cvnavi.downloader;
+package com.cvnavi.downloader.util;
 
 public class ImageUtil {
 

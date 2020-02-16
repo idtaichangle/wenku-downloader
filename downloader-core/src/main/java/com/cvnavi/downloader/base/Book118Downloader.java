@@ -1,14 +1,19 @@
-package com.cvnavi.downloader;
+package com.cvnavi.downloader.base;
 
+import com.cvnavi.downloader.common.DownloaderCallback;
 import com.teamdev.jxbrowser.dom.Element;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Optional;
 
 public class Book118Downloader extends AbstractDownloader {
+    public Book118Downloader(DownloaderCallback callback) {
+        super(callback);
+        prepareJsFile="book118.js";
+    }
+
     @Override
     public String getDocType() {
         return null;
@@ -33,21 +38,23 @@ public class Book118Downloader extends AbstractDownloader {
     }
 
     @Override
-    public void download() throws Exception {
-        getPageCount();
-        getPageName();
-        getDocType();
+    public void prepareDownload() {
+        super.prepareDownload();
+    }
 
-        prepareDownload("book118.js");
+    @Override
+    public void download() throws Exception {
+
+        prepareDownload();
 
         //book118有两种页面样式
         Optional<Element> ele=browser.mainFrame().get().document().get().findElementById("p0");
         if(ele.isPresent()){
 
             for(int p=1;p<=totalPage;p++){
-                browser.mainFrame().get().executeJavaScript("$('#p"+(p-1)+"')[0].scrollIntoView();");
+                executeJavaScript("$('#p"+(p-1)+"')[0].scrollIntoView();");
                 String script="$('#p"+(p-1)+" img').prop('src')";
-                String url=browser.mainFrame().get().executeJavaScript(script);
+                String url=executeJavaScript(script);
                 if(url!=null && url.length()>0){
                     BufferedImage pageImage= ImageIO.read(new URL(url));
                     writePageImage(pageImage,p);
@@ -58,15 +65,15 @@ public class Book118Downloader extends AbstractDownloader {
         }else{
             Thread.sleep(8000);
             String script="$('#btn_read').click()";
-            browser.mainFrame().get().executeJavaScript(script);
+            executeJavaScript(script);
             Thread.sleep(3000);
 
             for(int p=1;p<=totalPage;p++){
-                browser.mainFrame().get().executeJavaScript("$('div[data-id="+p+"]')[0].scrollIntoView();");
+                executeJavaScript("$('div[data-id="+p+"]')[0].scrollIntoView();");
                 Thread.sleep(1000);
                 script="$('div[data-id="+p+"] img').prop('src')";
 
-                String url=browser.mainFrame().get().executeJavaScript(script);
+                String url=executeJavaScript(script);
 
                 if(url!=null && url.length()>0){
                     BufferedImage pageImage= ImageIO.read(new URL(url));
@@ -78,5 +85,10 @@ public class Book118Downloader extends AbstractDownloader {
 
         Thread.sleep(10000);
         writePdf();
+    }
+
+    @Override
+    public BufferedImage downloadPage(int page) throws Exception {
+        return null;
     }
 }

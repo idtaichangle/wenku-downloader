@@ -1,14 +1,20 @@
-package com.cvnavi.downloader;
+package com.cvnavi.downloader.base;
 
+import com.cvnavi.downloader.common.DownloaderCallback;
 import com.teamdev.jxbrowser.dom.Element;
 
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
-import static com.cvnavi.downloader.ImageUtil.isLightGray;
+import static com.cvnavi.downloader.util.ImageUtil.isLightGray;
 
 public class LddocDownloader extends AbstractDownloader {
     String type;
+
+    public LddocDownloader(DownloaderCallback callback) {
+        super(callback);
+        prepareJsFile="lddoc.js";
+    }
+
     @Override
     public String getDocType() {
         Optional<Element> ele=browser.mainFrame().get().document().get().findElementByCssSelector("meta[property='og:document:type']");
@@ -40,40 +46,33 @@ public class LddocDownloader extends AbstractDownloader {
     }
 
     @Override
-    public void download() throws Exception {
-        getPageCount();
-        getPageName();
-        getDocType();
-
-        prepareDownload("lddoc.js");
-
-        Thread.sleep(200);
+    public void prepareDownload() {
+        super.prepareDownload();
 
         pageWidth=getJsFloat("jQuery('#outer_page_1').width()");
         pageHeight=getJsFloat("jQuery('#outer_page_1').height()");
         pageLeftMargin=getJsFloat("jQuery('#outer_page_1').offset().left");
 
-        for(int p=1;p<=totalPage;p++){
-            browser.mainFrame().get().executeJavaScript("document.getElementById(\"outer_page_"+p+"\").scrollIntoView();");
-            Thread.sleep(3000);
+    }
 
-            BufferedImage pageImage=new BufferedImage((int) (pageWidth*screenScale),(int)(pageHeight*screenScale),BufferedImage.TYPE_INT_RGB);
 
-            int segment=(int)Math.ceil(pageHeight/windowHeight);
+    @Override
+    public BufferedImage downloadPage(int p) throws Exception {
+        BufferedImage pageImage=new BufferedImage((int) (pageWidth*screenScale),(int)(pageHeight*screenScale),BufferedImage.TYPE_INT_RGB);
 
-            for(int i=0;i<segment;i++){
-                final float scroll=i==0?0:windowHeight;;
-                SwingUtilities.invokeLater(()->{
-                    browser.mainFrame().get().executeJavaScript("window.scrollBy(0,"+scroll+")");
-                });
-                Thread.sleep(500);
-                snapshot(pageImage,i);
-            }
-            removeWatermark(pageImage);
-            writePageImage(pageImage,p);
+        executeJavaScript("document.getElementById(\"outer_page_"+p+"\").scrollIntoView();");
+        Thread.sleep(3000);
+
+
+        int segment=(int)Math.ceil(pageHeight/windowHeight);
+
+        for(int i=0;i<segment;i++){
+            float scroll=i==0?0:windowHeight;;
+            executeJavaScript("window.scrollBy(0,"+scroll+")");
+            Thread.sleep(500);
+            snapshot(pageImage,i);
         }
-
-        writePdf();
+        return pageImage;
     }
 
     private void removeWatermark(BufferedImage bi){

@@ -1,42 +1,30 @@
-package com.cvnavi.downloader;
+package com.cvnavi.downloader.base;
 
 
+import com.cvnavi.downloader.common.DownloaderCallback;
 import com.teamdev.jxbrowser.dom.Element;
-import com.teamdev.jxbrowser.view.swing.BitmapUtil;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
-import static com.cvnavi.downloader.ImageUtil.isLightGray;
+import static com.cvnavi.downloader.util.ImageUtil.isLightGray;
 
 /**
  * 下载 https://www.docin.com/文档
  */
 public class DocinDownloader extends AbstractDownloader{
 
-    String script="";
-
-    @Override
-    public boolean allowFlash() {
-        return true;
+    public DocinDownloader(DownloaderCallback callback) {
+        super(callback);
+        prepareJsFile="docin.js";
     }
 
     @Override
-    public void download() throws Exception {
-        getPageCount();
-        getPageName();
-        getDocType();
-
-        prepareDownload("docin.js");
-
+    public void prepareDownload() {
+        super.prepareDownload();
         if(getDocType().contains(".ppt")){
-            script="jQuery('#contentcontainer').css('padding-top',0);";
-            browser.mainFrame().get().executeJavaScript(script);
+            String script="jQuery('#contentcontainer').css('padding-top',0);";
+            executeJavaScript(script);
             pageWidth=getJsFloat("jQuery('#page_1 .panel_inner').width();");
             pageHeight=getJsFloat("jQuery('#page_1 .panel_inner').height()");
             pageLeftMargin=getJsFloat("jQuery('#page_1 .panel_inner').offset().left");
@@ -45,44 +33,36 @@ public class DocinDownloader extends AbstractDownloader{
             pageHeight=getJsFloat("document.getElementById('page_1').clientHeight");
             pageLeftMargin=getJsFloat("jQuery('#page_1').offset().left");
         }
+    }
 
+
+    @Override
+    public BufferedImage downloadPage(int p) throws Exception {
+        BufferedImage pageImage=new BufferedImage((int) (pageWidth*screenScale),(int)(pageHeight*screenScale),BufferedImage.TYPE_INT_RGB);
+
+        String script="docinReader.gotoPage("+p+",1);";
+        executeJavaScript(script);
         Thread.sleep(500);
 
-        for(int p=1;p<=totalPage;p++){
-            BufferedImage pageImage=new BufferedImage((int) (pageWidth*screenScale),(int)(pageHeight*screenScale),BufferedImage.TYPE_INT_RGB);
+        script="document.getElementById('page_"+p+"').scrollIntoView();";
+        executeJavaScript(script);
+        Thread.sleep(2000);
 
-            script="docinReader.gotoPage("+p+",1);";
-            SwingUtilities.invokeLater(()->{
-                browser.mainFrame().get().executeJavaScript(script);
-            });
+        int segment=(int)Math.ceil(pageHeight/windowHeight);
+
+        for(int i=0;i<segment;i++){
+            float scroll=i==0?0:windowHeight;;
+            executeJavaScript("window.scrollBy(0,"+scroll+")");
             Thread.sleep(500);
-
-            script="document.getElementById('page_"+p+"').scrollIntoView();";
-            SwingUtilities.invokeLater(()->{
-                browser.mainFrame().get().executeJavaScript(script);
-            });
-            Thread.sleep(2000);
-
-            int segment=(int)Math.ceil(pageHeight/windowHeight);
-
-            for(int i=0;i<segment;i++){
-                final float scroll=i==0?0:windowHeight;;
-                SwingUtilities.invokeLater(()->{
-                    browser.mainFrame().get().executeJavaScript("window.scrollBy(0,"+scroll+")");
-                });
-                Thread.sleep(500);
-                snapshot(pageImage,i);
-            }
-            removeWatermark(pageImage);
-            writePageImage(pageImage,p);
+            snapshot(pageImage,i);
         }
-
-        writePdf();
+        removeWatermark(pageImage);
+        return pageImage;
     }
 
     public String getDocType(){
         docType=".doc";
-        script="jQuery('.info_list dd:nth-child(2)').text()";
+        String script="jQuery('.info_list dd:nth-child(2)').text()";
         String value=browser.mainFrame().get().executeJavaScript(script);
         if(value!=null){
             docType=value;
