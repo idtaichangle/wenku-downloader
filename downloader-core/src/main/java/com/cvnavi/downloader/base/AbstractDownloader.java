@@ -3,6 +3,7 @@ package com.cvnavi.downloader.base;
 import com.cvnavi.downloader.Config;
 import com.cvnavi.downloader.Document;
 import com.cvnavi.downloader.browser.BrowserFrame;
+import com.cvnavi.downloader.util.EncryptUtil;
 import com.cvnavi.downloader.util.ResourceReader;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -125,7 +126,9 @@ public abstract class AbstractDownloader {
     protected  void writePdf() throws IOException, DocumentException {
         if(new File(tmpDir+File.separator+"1.png").exists()){
 
-            String outputFile=Config.FILES_DIR+File.separator+document.getMeta().getName()+".pdf";
+            String name=document.getMeta().getName()+System.currentTimeMillis();
+            name= EncryptUtil.md5(name);
+            String outputFile=Config.FILES_DIR+File.separator+name+".pdf";
             FileOutputStream fos = new FileOutputStream(outputFile);
 
             Image first=Image.getInstance(tmpDir+File.separator+"1.png");

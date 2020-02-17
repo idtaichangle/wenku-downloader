@@ -5,7 +5,8 @@ import com.cvnavi.downloader.Document;
 import com.cvnavi.downloader.base.AbstractDownloader;
 import com.cvnavi.downloader.base.DownloaderSelector;
 import com.cvnavi.downloader.browser.BrowserFrame;
-import lombok.Data;
+import com.cvnavi.downloader.db.dao.DownloadRecordDao;
+import com.cvnavi.downloader.db.model.DownloadRecord;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -52,17 +53,29 @@ public class DownloadTask {
                     callback.metaReady(this,meta);
                 }
                 if(meta!=null){
-                    downloader.download(meta);
-                }
-
-                if(callback!=null){
-                    callback.downloadFinish(this,true);
+                    Document document=downloader.download(meta);
+                    document.getFile();
+                    DownloadRecord record= DownloadRecordDao.find(getId());
+                    record.setName(document.getMeta().getName());
+                    if(document.getFile()!=null){
+                        String eName= Paths.get(document.getFile()).getFileName().
+                                toString().replace(".pdf","");
+                        record.setEncryptName(eName);
+                    }
+                    DownloadRecordDao.update(record);
+                    if(callback!=null){
+                        callback.downloadFinish(this,true,record.getEncryptName());
+                    }
+                }else{
+                    if(callback!=null){
+                        callback.downloadFinish(this,false,null);
+                    }
                 }
                 log.debug("finish download "+url);
             } catch (Exception e) {
                 log.error(e.getMessage(),e);
                 if(callback!=null){
-                    callback.downloadFinish(this,false);
+                    callback.downloadFinish(this,false,null);
                 }
             }
         }

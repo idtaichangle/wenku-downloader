@@ -9,7 +9,7 @@ import java.sql.*;
 @Log4j2
 public class DownloadRecordDao {
 
-    public static DownloadRecord findDownloadRecord(int id) {
+    public static DownloadRecord find(int id) {
         DownloadRecord dr=null;
         try {
             Connection con = DBConnection.getInstance().get();
@@ -31,11 +31,33 @@ public class DownloadRecordDao {
         return dr;
     }
 
-    public static synchronized boolean insertDownloadRecord(DownloadRecord record) {
+    public static DownloadRecord findByEncryptName(String name) {
+        DownloadRecord dr=null;
         try {
             Connection con = DBConnection.getInstance().get();
             if (con != null) {
-                String sql = "insert into  download_record(url,create_time) values(?,?)";
+                Statement st = con.createStatement();
+                String sql = "select * from download_record where encrypt_name='"+name+"'";
+                ResultSet rs = st.executeQuery(sql);
+                while (rs.next()) {
+                    dr=new DownloadRecord();
+                    fillValue(dr,rs);
+                    break;
+                }
+                rs.close();
+                st.close();
+            }
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return dr;
+    }
+
+    public static synchronized boolean insert(DownloadRecord record) {
+        try {
+            Connection con = DBConnection.getInstance().get();
+            if (con != null) {
+                String sql = "insert into  download_record(url,create_time,name,encrypt_name) values(?,?,?,?)";
                 PreparedStatement st = con.prepareStatement(sql);
                 setStatement(st, record);
                 st.execute();
@@ -49,6 +71,24 @@ public class DownloadRecordDao {
                 return true;
             }
         } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return false;
+    }
+
+    public static synchronized boolean update(DownloadRecord record) {
+        try {
+            Connection con = DBConnection.getInstance().get();
+            if (con != null) {
+                String sql = "update  download_record set url=?,create_time=?,name=?,encrypt_name=? where id="+record.getId();
+                PreparedStatement st = con.prepareStatement(sql);
+                setStatement(st, record);
+                st.execute();
+                st.close();
+                return true;
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
         return false;
     }
@@ -56,6 +96,8 @@ public class DownloadRecordDao {
     private static void setStatement(PreparedStatement st, DownloadRecord recored) throws SQLException {
         st.setString(1,recored.getUrl());
         st.setLong(2,recored.getCreateTime());
+        st.setString(3,recored.getName());
+        st.setString(4,recored.getEncryptName());
     }
 
 
@@ -63,5 +105,7 @@ public class DownloadRecordDao {
         dr.setId(rs.getInt("id"));
         dr.setUrl(rs.getString("url"));
         dr.setCreateTime(rs.getLong("create_time"));
+        dr.setName(rs.getString("name"));
+        dr.setEncryptName(rs.getString("encrypt_name"));
     }
 }

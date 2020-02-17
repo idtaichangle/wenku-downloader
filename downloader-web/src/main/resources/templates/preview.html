@@ -18,14 +18,16 @@
         正在准备文档，请耐心等待。<i class="doc-name"></i>
     </div>
     <div id="preview" style="display: none">
-        <i class="doc-name"></i> 已就绪。点击<button onclick="download();">下载</button>
+        <i class="doc-name"></i> 已就绪。点击<a id="d_link">下载</a>
     </div>
 </div>
 </body>
 <script>
     var id=[[${id}]];
+    var fileName="";
+
     function download() {
-        $.post("download",function (result) {
+        $.post("download?fileName="+fileName,function (result) {
             console.log(result);
         });
     }
@@ -34,16 +36,17 @@
         var ws = new WebSocket('ws://' + location.host + '/downloader-ws'+'?id='+id);
         ws.onmessage = function (result) {
             var json = JSON.parse(result.data);
-            if(json.success){
-                if(json.action=="fetch_meta"){
-                    console.log(json);
+            if(json.action=="fetch_meta"){
+                if(json.success){
                     $(".doc-name").text(json.meta.name);
                     $("#meta").show()
-                }else if(json.action=="download"){
-                    $("#loading").hide();
-                    $("#meta").hide();
-                    $("#preview").show();
                 }
+            }else if(json.action=="download"){
+                $("#loading").hide();
+                $("#meta").hide();
+                $("#preview").show();
+                fileName=json.fileName;
+                $("#d_link").attr("href","download?fileName="+fileName);
             }
         }
     }

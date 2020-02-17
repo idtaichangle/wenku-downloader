@@ -30,6 +30,11 @@
             <version>1.0</version>
         </dependency>
         <dependency>
+            <groupId>com.cvnavi</groupId>
+            <artifactId>downloader-data</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.teamdev.jxbrowser</groupId>
             <artifactId>jxbrowser</artifactId>
             <version>${jxbrowser.version}</version>

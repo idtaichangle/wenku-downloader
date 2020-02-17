@@ -7,4 +7,6 @@ public class DownloadRecord {
     private int id;
     private String url;
     private long createTime;
+    private String name;
+    private String encryptName;
 }

@@ -43,13 +43,14 @@ public class WebSocketServer{
         }
 
         @Override
-        public void downloadFinish(DownloadTask task, boolean success) {
+        public void downloadFinish(DownloadTask task, boolean success,String fileName) {
             WebSocketServer server=webSocketMap.get(task.getId());
             if(server!=null){
                 try {
                     HashMap<String,Object> map=new HashMap<>();
                     map.put("action","download");
-                    map.put("success",true);
+                    map.put("success",success);
+                    map.put("fileName",fileName);
                     server.sendMessage(toJsonStr(map));
                 } catch (IOException e) {
                     log.error(e.getMessage());
