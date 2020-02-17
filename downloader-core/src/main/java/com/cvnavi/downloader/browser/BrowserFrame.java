@@ -51,7 +51,7 @@ public class BrowserFrame {
         frame=new JFrame();
         browser=engine.newBrowser();
         browserView=BrowserView.newInstance(browser);
-        queue=new DownloaderQueue(this);
+        queue=new DownloaderQueue();
     }
 
     public void showFrame(){

@@ -17,7 +17,7 @@ public class BaiduDownloader extends AbstractDownloader {
     @Override
     public void prepareDownload() {
         super.prepareDownload();
-        if(! docType.contains("ppt")){
+        if(! document.getMeta().getType().contains("ppt")){
             pageWidth=getJsFloat("$('.reader-page-1').width()");
             pageHeight=getJsFloat("$('.reader-page-1').height()");
             pageLeftMargin=getJsFloat("$('.reader-page-1').offset().left");
@@ -26,7 +26,7 @@ public class BaiduDownloader extends AbstractDownloader {
 
     @Override
     public BufferedImage downloadPage(int p) throws Exception {
-        if(docType.contains("ppt")){
+        if(document.getMeta().getType().contains("ppt")){
             String script="document.getElementsByClassName('reader-pageNo-"+p+"')[0].scrollIntoView();";
             executeJavaScript(script);
             Thread.sleep(1000);
@@ -58,6 +58,7 @@ public class BaiduDownloader extends AbstractDownloader {
 
 
     public String getDocType(){
+        String docType=null;
         String value=executeJavaScript(" window.__fisData._data.WkInfo.DocInfo.docType");
         if(value!=null){
             docType= value;
@@ -66,6 +67,7 @@ public class BaiduDownloader extends AbstractDownloader {
     }
 
     public  String getPageName(){
+        String name=null;
         String  value=executeJavaScript("document.title");
         if(value!=null && value.contains("-")){
             value=value.split("-")[0].trim();
@@ -77,13 +79,12 @@ public class BaiduDownloader extends AbstractDownloader {
     }
 
     public  int  getPageCount(){
-        if(totalPage==0){
-            String value=executeJavaScript("$('.page-count').text()");
-            if(value!=null){
-                String pages=value.replace("/","");
-                if(pages.length()>0){
-                    totalPage=Integer.parseInt(pages);
-                }
+        int totalPage=0;
+        String value=executeJavaScript("$('.page-count').text()");
+        if(value!=null){
+            String pages=value.replace("/","");
+            if(pages.length()>0){
+                totalPage=Integer.parseInt(pages);
             }
         }
         return totalPage;

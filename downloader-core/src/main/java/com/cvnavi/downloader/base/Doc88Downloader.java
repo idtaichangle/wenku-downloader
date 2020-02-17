@@ -1,6 +1,7 @@
 package com.cvnavi.downloader.base;
 
 
+import com.cvnavi.downloader.Holder;
 import com.teamdev.jxbrowser.dom.Element;
 
 import javax.swing.*;
@@ -55,21 +56,21 @@ public class Doc88Downloader extends AbstractDownloader{
     }
 
     public  String getPageName(){
+        Holder<String> holder=new Holder<>();
         Optional<Element> ele=browser.mainFrame().get().document().get().findElementByCssSelector("meta[property='og:title']");
         ele.ifPresent(e->{
-            name=e.attributeValue("content");
+            holder.set(e.attributeValue("content"));
         });
-        return name;
+        return holder.get();
     }
 
     public  int  getPageCount(){
-        if(totalPage==0){
-            Optional<Element> ele=browser.mainFrame().get().document().get().findElementByCssSelector("meta[property='og:document:page']");
-            ele.ifPresent(e->{
-                totalPage=Integer.parseInt( e.attributeValue("content"));
-            });
-        }
-        return totalPage;
+        Holder<Integer> holder=new Holder<>(0);
+        Optional<Element> ele=browser.mainFrame().get().document().get().findElementByCssSelector("meta[property='og:document:page']");
+        ele.ifPresent(e->{
+            holder.set(Integer.parseInt( e.attributeValue("content")));
+        });
+        return holder.get();
     }
 
 

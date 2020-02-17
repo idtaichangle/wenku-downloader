@@ -1,17 +1,13 @@
 package com.cvnavi.downloader.common;
 
-import com.cvnavi.downloader.browser.BrowserFrame;
-
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DownloaderQueue extends LinkedBlockingQueue<DownloadTask>{
 
-    private BrowserFrame browserFrame;
     boolean running=true;
     private DownloadTask STOP_QUEUE_FLAG=new DownloadTask();
 
-    public DownloaderQueue(BrowserFrame browserFrame) {
-        this.browserFrame = browserFrame;
+    public DownloaderQueue(){
         startQueue();
     }
 

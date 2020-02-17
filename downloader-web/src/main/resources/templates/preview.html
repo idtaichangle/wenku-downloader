@@ -4,12 +4,21 @@
     <meta charset="UTF-8">
     <title>文档下载</title>
     <script th:replace="head"></script>
+    <style>
+        #container{
+            width: 100%;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 <div id="container">
     <img id="loading"  src="img/loading.gif">
+    <div id="meta" style="display: none">
+        正在准备文档，请耐心等待。<i class="doc-name"></i>
+    </div>
     <div id="preview" style="display: none">
-        <button onclick="download();">下载</button>
+        <i class="doc-name"></i> 已就绪。点击<button onclick="download();">下载</button>
     </div>
 </div>
 </body>
@@ -26,8 +35,15 @@
         ws.onmessage = function (result) {
             var json = JSON.parse(result.data);
             if(json.success){
-                $("#loading").hide();
-                $("#preview").show();
+                if(json.action=="fetch_meta"){
+                    console.log(json);
+                    $(".doc-name").text(json.meta.name);
+                    $("#meta").show()
+                }else if(json.action=="download"){
+                    $("#loading").hide();
+                    $("#meta").hide();
+                    $("#preview").show();
+                }
             }
         }
     }

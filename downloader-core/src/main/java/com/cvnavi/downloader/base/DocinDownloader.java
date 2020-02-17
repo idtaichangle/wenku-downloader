@@ -1,6 +1,7 @@
 package com.cvnavi.downloader.base;
 
 
+import com.cvnavi.downloader.Holder;
 import com.teamdev.jxbrowser.dom.Element;
 
 import java.awt.image.BufferedImage;
@@ -59,31 +60,27 @@ public class DocinDownloader extends AbstractDownloader{
     }
 
     public String getDocType(){
-        docType=".doc";
         String script="jQuery('.info_list dd:nth-child(2)').text()";
-        String value=browser.mainFrame().get().executeJavaScript(script);
-        if(value!=null){
-            docType=value;
-        }
-        return docType;
+        String value=executeJavaScript(script);
+        return value;
     }
 
     public  String getPageName(){
+        Holder<String> holder=new Holder<>();
         Optional<Element> ele=browser.mainFrame().get().document().get().findElementByCssSelector("meta[property='og:title']");
         ele.ifPresent(e->{
-            name=e.attributeValue("content");
+            holder.set(e.attributeValue("content"));
         });
-        return name;
+        return holder.get();
     }
 
     public  int  getPageCount(){
-        if(totalPage==0){
-            String value=browser.mainFrame().get().executeJavaScript("jQuery('.page_num').text()");
-            if(value!=null){
-                String pages=value.replace("/","");
-                if(pages.length()>0){
-                    totalPage=Integer.parseInt(pages);
-                }
+        int totalPage=0;
+        String value=executeJavaScript("jQuery('.page_num').text()");
+        if(value!=null){
+            String pages=value.replace("/","");
+            if(pages.length()>0){
+                totalPage=Integer.parseInt(pages);
             }
         }
         return totalPage;

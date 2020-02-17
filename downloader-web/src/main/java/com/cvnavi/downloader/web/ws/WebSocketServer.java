@@ -1,6 +1,8 @@
 package com.cvnavi.downloader.web.ws;
 
 
+import com.cvnavi.downloader.Document;
+import com.cvnavi.downloader.common.DownloadTask;
 import com.cvnavi.downloader.common.DownloaderCallback;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,15 +25,35 @@ public class WebSocketServer{
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
 
-    public static DownloaderCallback callback=(task,success)->{
-        WebSocketServer server=webSocketMap.get(task.getId());
-        if(server!=null){
-            try {
-                HashMap<String,Object> map=new HashMap<>();
-                map.put("success",true);
-                server.sendMessage(toJsonStr(map));
-            } catch (IOException e) {
-                log.error(e.getMessage());
+    public static DownloaderCallback callback=new DownloaderCallback() {
+        @Override
+        public void metaReady(DownloadTask task, Document.Meta meta) {
+            WebSocketServer server=webSocketMap.get(task.getId());
+            if(server!=null){
+                try {
+                    HashMap<String,Object> map=new HashMap<>();
+                    map.put("action","fetch_meta");
+                    map.put("success",true);
+                    map.put("meta",meta);
+                    server.sendMessage(toJsonStr(map));
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+        }
+
+        @Override
+        public void downloadFinish(DownloadTask task, boolean success) {
+            WebSocketServer server=webSocketMap.get(task.getId());
+            if(server!=null){
+                try {
+                    HashMap<String,Object> map=new HashMap<>();
+                    map.put("action","download");
+                    map.put("success",true);
+                    server.sendMessage(toJsonStr(map));
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
             }
         }
     };

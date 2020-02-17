@@ -6,4 +6,4 @@ setTimeout(function(){
     if($("#layer_view_iframe").length>0){
         window.location.href=$("#layer_view_iframe").prop("src");
     }
-},2000);
+},1000);

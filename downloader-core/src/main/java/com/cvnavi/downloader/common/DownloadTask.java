@@ -1,6 +1,7 @@
 package com.cvnavi.downloader.common;
 
 import com.cvnavi.downloader.Config;
+import com.cvnavi.downloader.Document;
 import com.cvnavi.downloader.base.AbstractDownloader;
 import com.cvnavi.downloader.base.DownloaderSelector;
 import com.cvnavi.downloader.browser.BrowserFrame;
@@ -38,13 +39,22 @@ public class DownloadTask {
         });
     }
 
+
+
     private void doDownload(){
         AbstractDownloader downloader= DownloaderSelector.select(url);
         if(downloader!=null){
             try {
                 log.debug("begin download "+url);
                 clearTmpDir();
-                downloader.download();
+                Document.Meta meta=downloader.fetchMeta();
+                if(callback!=null){
+                    callback.metaReady(this,meta);
+                }
+                if(meta!=null){
+                    downloader.download(meta);
+                }
+
                 if(callback!=null){
                     callback.downloadFinish(this,true);
                 }

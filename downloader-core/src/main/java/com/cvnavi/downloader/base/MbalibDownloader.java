@@ -3,7 +3,6 @@ package com.cvnavi.downloader.base;
 import java.awt.image.BufferedImage;
 
 public class MbalibDownloader extends AbstractDownloader {
-    String docType;
 
     public MbalibDownloader(){
         prepareJsFile="mbalib.js";
@@ -12,28 +11,21 @@ public class MbalibDownloader extends AbstractDownloader {
     @Override
     public String getDocType() {
         String value=executeJavaScript("wgDocType");
-        if(value!=null){
-            docType=value;
-        }
-        return docType;
+        return value;
     }
 
     @Override
     public String getPageName() {
         String value=executeJavaScript("wgDocTitle");
-        if(value!=null){
-            name=value;
-        }
-        return name;
+        return value;
     }
 
     @Override
     public int getPageCount() {
-        if(totalPage==0){
-            String value=executeJavaScript("$(\".num span\").text();");
-            if(value!=null && value.length()>0){
-                totalPage=Integer.parseInt(value.replace("/",""));
-            }
+        int totalPage=0;
+        String value=executeJavaScript("$(\".num span\").text();");
+        if(value!=null && value.length()>0){
+            totalPage=Integer.parseInt(value.replace("/",""));
         }
         return totalPage;
     }

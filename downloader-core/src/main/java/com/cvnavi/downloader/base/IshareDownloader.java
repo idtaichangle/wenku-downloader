@@ -14,21 +14,16 @@ public class IshareDownloader extends AbstractDownloader {
 
     @Override
     public String getPageName() {
-
-        String value=browser.mainFrame().get().executeJavaScript("$('.crumb strong').text();");
-        if(value!=null){
-            name=value;
-        }
-        return name;
+        String value=executeJavaScript("$('.crumb strong').text();");
+        return value;
     }
 
     @Override
     public int getPageCount() {
-        if(totalPage==0){
-            String value=browser.mainFrame().get().executeJavaScript("$('.page-input-con span').text();");
-            if(value!=null && value.length()>0){
-                totalPage=Integer.parseInt(value);
-            }
+        int totalPage=0;
+        String value=browser.mainFrame().get().executeJavaScript("$('.page-input-con span').text();");
+        if(value!=null && value.length()>0){
+            totalPage=Integer.parseInt(value);
         }
         return totalPage;
     }
