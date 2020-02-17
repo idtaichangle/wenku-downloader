@@ -62,7 +62,7 @@ public abstract class AbstractDownloader {
     public  void prepareDownload(){
 
         windowHeight=getJsFloat("window.innerHeight");//不包含水平滚动条
-        String script=ResourceReader.read(prepareJsFile);
+        String script=new String(ResourceReader.readFile(prepareJsFile));
         if(script!=null && script.length()>0){
             executeJavaScript(script);
         }

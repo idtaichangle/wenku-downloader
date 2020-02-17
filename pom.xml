@@ -12,6 +12,9 @@
     <modules>
         <module>downloader-core</module>
         <module>downloader-web</module>
+        <module>downloader-data</module>
+        <module>downloader-startup</module>
+        <module>downloader-common</module>
     </modules>
 
     <build>
