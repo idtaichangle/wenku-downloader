@@ -1,4 +1,4 @@
-package com.cvnavi.downloader.common;
+package com.cvnavi.downloader.core;
 
 import com.cvnavi.downloader.Config;
 import com.cvnavi.downloader.Document;
@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

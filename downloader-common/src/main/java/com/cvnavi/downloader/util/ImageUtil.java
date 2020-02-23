@@ -6,7 +6,7 @@ public class ImageUtil {
         int r=(rgb>>16)&0xFF;
         int g=(rgb>>8)&0xFF;
         int b=(rgb)&0xFF;
-        return r==g && r==b && r>=200;
+        return r==g && r==b && r>=160;
     }
 
 }

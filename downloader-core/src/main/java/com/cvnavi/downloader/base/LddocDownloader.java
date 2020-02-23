@@ -17,21 +17,17 @@ public class LddocDownloader extends AbstractDownloader {
 
     @Override
     public String getDocType() {
-        Optional<Element> ele=browser.mainFrame().get().document().get().findElementByCssSelector("meta[property='og:document:type']");
-        ele.ifPresent(e->{
-            type=e.attributeValue("content");
-        });
-        return type;
+        String value=executeJavaScript("$(\"meta[property='og:document:type']\").attr(\"content\")");
+        return value;
     }
 
     @Override
     public String getPageName() {
-        Holder<String> holder=new Holder<>();
-        Optional<Element> ele=browser.mainFrame().get().document().get().findElementByCssSelector("meta[property='og:title']");
-        ele.ifPresent(e->{
-            holder.set(e.attributeValue("content"));
-        });
-        return holder.get();
+        String value=executeJavaScript("$(\"meta[property='og:title']\").attr(\"content\")");
+        if(value!=null && value.contains(".")){
+            value=value.substring(0,value.lastIndexOf("."));
+        }
+        return value;
     }
 
     @Override
@@ -72,6 +68,7 @@ public class LddocDownloader extends AbstractDownloader {
             Thread.sleep(100);
             snapshot(pageImage,i);
         }
+        removeWatermark(pageImage);
         return pageImage;
     }
 

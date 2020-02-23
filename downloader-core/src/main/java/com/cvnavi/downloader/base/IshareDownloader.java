@@ -9,12 +9,21 @@ public class IshareDownloader extends AbstractDownloader {
 
     @Override
     public String getDocType() {
-        return null;
+        String value=executeJavaScript("$('.crumb strong').text();");
+        if(value!=null && value.contains(".")){
+            value=value.substring(value.lastIndexOf(".")+1);
+        }else{
+            value="pdf";
+        }
+        return value;
     }
 
     @Override
     public String getPageName() {
         String value=executeJavaScript("$('.crumb strong').text();");
+        if(value!=null && value.contains(".")){
+            value=value.substring(0,value.lastIndexOf("."));
+        }
         return value;
     }
 

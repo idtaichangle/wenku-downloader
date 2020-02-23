@@ -20,6 +20,9 @@
     <div id="preview" style="display: none">
         <i class="doc-name"></i> 已就绪。点击<a id="d_link">下载</a>
     </div>
+    <div id="fail" style="display: none">
+        无法下载该文件。请稍后重试。
+    </div>
 </div>
 </body>
 <script>
@@ -44,9 +47,13 @@
             }else if(json.action=="download"){
                 $("#loading").hide();
                 $("#meta").hide();
-                $("#preview").show();
-                fileName=json.fileName;
-                $("#d_link").attr("href","download?fileName="+fileName);
+                if(json.success){
+                    $("#preview").show();
+                    fileName=json.fileName;
+                    $("#d_link").attr("href","download?fileName="+fileName);
+                }else{
+                    $("#fail").show();
+                }
             }
         }
     }

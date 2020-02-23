@@ -1,4 +1,4 @@
-package com.cvnavi.downloader.common;
+package com.cvnavi.downloader.core;
 
 import com.cvnavi.downloader.Document;
 

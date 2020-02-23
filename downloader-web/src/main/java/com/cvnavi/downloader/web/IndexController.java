@@ -2,7 +2,7 @@ package com.cvnavi.downloader.web;
 
 import com.cvnavi.downloader.Config;
 import com.cvnavi.downloader.browser.BrowserFrame;
-import com.cvnavi.downloader.common.DownloadTask;
+import com.cvnavi.downloader.core.DownloadTask;
 import com.cvnavi.downloader.db.dao.DownloadRecordDao;
 import com.cvnavi.downloader.db.model.DownloadRecord;
 import com.cvnavi.downloader.web.ws.WebSocketServer;

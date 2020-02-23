@@ -1,11 +1,9 @@
 package com.cvnavi.downloader.browser;
 
 
-import com.cvnavi.downloader.common.DownloadTask;
-import com.cvnavi.downloader.common.DownloaderQueue;
-import com.cvnavi.downloader.util.ResourceReader;
+import com.cvnavi.downloader.core.DownloadTask;
+import com.cvnavi.downloader.core.DownloaderQueue;
 import com.teamdev.jxbrowser.browser.Browser;
-import com.teamdev.jxbrowser.engine.*;
 import com.teamdev.jxbrowser.event.Observer;
 import com.teamdev.jxbrowser.navigation.Navigation;
 import com.teamdev.jxbrowser.navigation.event.LoadFinished;
@@ -16,8 +14,6 @@ import lombok.extern.log4j.Log4j2;
 
 import javax.swing.*;
 import java.awt.*;
-import java.nio.file.Paths;
-import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 

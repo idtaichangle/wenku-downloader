@@ -1,4 +1,4 @@
-package com.cvnavi.downloader.common;
+package com.cvnavi.downloader.core;
 
 import lombok.extern.log4j.Log4j2;
 

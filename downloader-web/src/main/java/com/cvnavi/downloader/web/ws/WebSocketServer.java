@@ -2,8 +2,8 @@ package com.cvnavi.downloader.web.ws;
 
 
 import com.cvnavi.downloader.Document;
-import com.cvnavi.downloader.common.DownloadTask;
-import com.cvnavi.downloader.common.DownloaderCallback;
+import com.cvnavi.downloader.core.DownloadTask;
+import com.cvnavi.downloader.core.DownloaderCallback;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
