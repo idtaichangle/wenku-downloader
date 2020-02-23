@@ -2,6 +2,7 @@ package com.cvnavi.downloader.base;
 
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
@@ -28,7 +29,7 @@ public class BaiduDownloader extends AbstractDownloader {
     public BufferedImage downloadPage(int p) throws Exception {
         if(document.getMeta().getType().contains("ppt")){
             String script="document.getElementsByClassName('reader-pageNo-"+p+"')[0].scrollIntoView();";
-            executeJavaScript(script);
+            executeJavaScriptAsync(script);
             Thread.sleep(1000);
             script="$('.reader-pageNo-"+p+" div img').attr('src')";
             String value=executeJavaScript(script);
@@ -38,16 +39,15 @@ public class BaiduDownloader extends AbstractDownloader {
             }
         }else{
             BufferedImage pageImage=new BufferedImage((int) (pageWidth*screenScale),(int)(pageHeight*screenScale),BufferedImage.TYPE_INT_RGB);
-
             String script="document.getElementsByClassName('reader-page-"+p+"')[0].scrollIntoView();";
-            executeJavaScript(script);
+            executeJavaScriptAsync(script);
 
             Thread.sleep(2000);
 
             int segment=(int)Math.ceil(pageHeight/windowHeight);
             for(int i=0;i<segment;i++){
                 int scroll= (i==0?0: (int) windowHeight);
-                executeJavaScript("window.scrollBy(0,"+scroll+")");
+                executeJavaScriptAsync("window.scrollBy(0,"+scroll+")");
                 Thread.sleep(100);
                 snapshot(pageImage,i);
             }

@@ -34,16 +34,14 @@ public class Doc88Downloader extends AbstractDownloader{
 
         BufferedImage pageImage=new BufferedImage((int) (pageWidth*screenScale),(int)(pageHeight*screenScale),BufferedImage.TYPE_INT_RGB);
 
-        executeJavaScript("document.getElementById(\"outer_page_"+p+"\").scrollIntoView();");
+        executeJavaScriptAsync("document.getElementById(\"outer_page_"+p+"\").scrollIntoView();");
         Thread.sleep(3000);
 
         int segment=(int)Math.ceil(pageHeight/windowHeight);
 
         for(int i=0;i<segment;i++){
             final float scroll=i==0?0:windowHeight;;
-            SwingUtilities.invokeLater(()->{
-                browser.mainFrame().get().executeJavaScript("window.scrollBy(0,"+scroll+")");
-            });
+            executeJavaScriptAsync("window.scrollBy(0,"+scroll+")");
             Thread.sleep(100);
             snapshot(pageImage,i);
         }

@@ -14,6 +14,7 @@ import com.teamdev.jxbrowser.view.swing.BitmapUtil;
 import lombok.extern.log4j.Log4j2;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -62,14 +63,13 @@ public abstract class AbstractDownloader {
 
     public  void prepareDownload(){
 
-        windowHeight=getJsFloat("window.innerHeight");//不包含水平滚动条
+        windowHeight=getJsFloat("window.innerHeight");
         String script=new String(ResourceReader.readFile(prepareJsFile));
         if(script!=null && script.length()>0){
             executeJavaScript(script);
         }
 
-        Component widget = BrowserFrame.instance().getBrowserView().getComponent(0);
-        screenScale= BitmapUtil.toBufferedImage(browser.bitmap()).getWidth()/(float)widget.getWidth();
+        screenScale= BitmapUtil.toBufferedImage(browser.bitmap()).getWidth()/getJsFloat("window.innerWidth");
     }
 
     public Document download() throws Exception {
@@ -101,6 +101,12 @@ public abstract class AbstractDownloader {
         }else{
             return null;
         }
+    }
+
+    protected void executeJavaScriptAsync(final String script){
+        SwingUtilities.invokeLater(()->{
+            browser.mainFrame().get().executeJavaScript(script);
+        });
     }
 
     public float getJsFloat(String script){

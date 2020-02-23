@@ -60,7 +60,7 @@ public class LddocDownloader extends AbstractDownloader {
     public BufferedImage downloadPage(int p) throws Exception {
         BufferedImage pageImage=new BufferedImage((int) (pageWidth*screenScale),(int)(pageHeight*screenScale),BufferedImage.TYPE_INT_RGB);
 
-        executeJavaScript("document.getElementById(\"outer_page_"+p+"\").scrollIntoView();");
+        executeJavaScriptAsync("document.getElementById(\"outer_page_"+p+"\").scrollIntoView();");
         Thread.sleep(3000);
 
 
@@ -68,7 +68,7 @@ public class LddocDownloader extends AbstractDownloader {
 
         for(int i=0;i<segment;i++){
             float scroll=i==0?0:windowHeight;;
-            executeJavaScript("window.scrollBy(0,"+scroll+")");
+            executeJavaScriptAsync("window.scrollBy(0,"+scroll+")");
             Thread.sleep(100);
             snapshot(pageImage,i);
         }

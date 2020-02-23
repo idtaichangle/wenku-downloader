@@ -11,13 +11,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @Log4j2
-public class DownloadTask {
+public class DownloadTask{
 
     @Getter @Setter
     private int id;
@@ -30,23 +31,27 @@ public class DownloadTask {
 
     private boolean downloading=false;
 
+    private Thread thread= new Thread(() -> doDownload());
+
     public void download(){
         downloading=false;
         BrowserFrame.instance().browse(getUrl(),(event)->{
             if(!downloading){//防止多次出发LoadFinished事件。
                 downloading=true;
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                }
-                doDownload();
+                thread.start();
             }
         });
+        try {
+            thread.join(60*1000);
+        } catch (InterruptedException e) {
+        }
     }
 
-
-
     private void doDownload(){
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+        }
         AbstractDownloader downloader= DownloaderSelector.select(url);
         if(downloader!=null){
             try {
@@ -84,6 +89,7 @@ public class DownloadTask {
             }
         }
     }
+
 
     private void clearTmpDir()  {
         try {

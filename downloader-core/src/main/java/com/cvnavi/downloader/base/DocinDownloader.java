@@ -40,18 +40,18 @@ public class DocinDownloader extends AbstractDownloader{
         BufferedImage pageImage=new BufferedImage((int) (pageWidth*screenScale),(int)(pageHeight*screenScale),BufferedImage.TYPE_INT_RGB);
 
         String script="docinReader.gotoPage("+p+",1);";
-        executeJavaScript(script);
+        executeJavaScriptAsync(script);
         Thread.sleep(500);
 
         script="document.getElementById('page_"+p+"').scrollIntoView();";
-        executeJavaScript(script);
+        executeJavaScriptAsync(script);
         Thread.sleep(3000);
 
         int segment=(int)Math.ceil(pageHeight/windowHeight);
 
         for(int i=0;i<segment;i++){
             float scroll=i==0?0:windowHeight;;
-            executeJavaScript("window.scrollBy(0,"+scroll+")");
+            executeJavaScriptAsync("window.scrollBy(0,"+scroll+")");
             Thread.sleep(100);
             snapshot(pageImage,i);
         }
