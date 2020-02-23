@@ -1,7 +1,10 @@
 package com.cvnavi.downloader.common;
 
+import lombok.extern.log4j.Log4j2;
+
 import java.util.concurrent.LinkedBlockingQueue;
 
+@Log4j2
 public class DownloaderQueue extends LinkedBlockingQueue<DownloadTask>{
 
     boolean running=true;
@@ -19,6 +22,7 @@ public class DownloaderQueue extends LinkedBlockingQueue<DownloadTask>{
                     if(task==STOP_QUEUE_FLAG){
                         break;
                     }else{
+                        log.info("begin task. url="+task.getUrl());
                         task.download();
                     }
                 }

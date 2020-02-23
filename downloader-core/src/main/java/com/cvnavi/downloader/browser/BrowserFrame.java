@@ -3,23 +3,21 @@ package com.cvnavi.downloader.browser;
 
 import com.cvnavi.downloader.common.DownloadTask;
 import com.cvnavi.downloader.common.DownloaderQueue;
+import com.cvnavi.downloader.util.ResourceReader;
 import com.teamdev.jxbrowser.browser.Browser;
 import com.teamdev.jxbrowser.engine.*;
 import com.teamdev.jxbrowser.event.Observer;
 import com.teamdev.jxbrowser.navigation.Navigation;
-import com.teamdev.jxbrowser.navigation.event.FrameDocumentLoadFinished;
-import com.teamdev.jxbrowser.navigation.event.FrameLoadFinished;
 import com.teamdev.jxbrowser.navigation.event.LoadFinished;
 import com.teamdev.jxbrowser.navigation.event.NavigationEvent;
-import com.teamdev.jxbrowser.time.Timestamp;
 import com.teamdev.jxbrowser.view.swing.BrowserView;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -33,14 +31,6 @@ public class BrowserFrame {
     private JFrame frame=null;
     private DownloaderQueue queue;
 
-    private static Engine engine;
-
-    static {
-        JXBrowserCrack.crack();
-        EngineOptions options=EngineOptions.newBuilder(RenderingMode.HARDWARE_ACCELERATED).build();
-        engine=Engine.newInstance(options);
-    }
-
     static BrowserFrame browserFrame=new BrowserFrame();
 
     public static BrowserFrame instance(){
@@ -49,7 +39,7 @@ public class BrowserFrame {
 
     private BrowserFrame(){
         frame=new JFrame();
-        browser=engine.newBrowser();
+        browser=JxBrowserEngine.getEngine().newBrowser();
         browserView=BrowserView.newInstance(browser);
         queue=new DownloaderQueue();
     }

@@ -35,6 +35,10 @@ public class DownloadTask {
         BrowserFrame.instance().browse(getUrl(),(event)->{
             if(!downloading){//防止多次出发LoadFinished事件。
                 downloading=true;
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                }
                 doDownload();
             }
         });
