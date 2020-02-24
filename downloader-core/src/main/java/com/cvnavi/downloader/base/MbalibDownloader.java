@@ -50,7 +50,7 @@ public class MbalibDownloader extends AbstractDownloader {
         for(int i=0;i<segment;i++){
             float scroll=i==0?0:windowHeight;;
             executeJavaScriptAsync("window.scrollBy(0,"+scroll+")");
-            Thread.sleep(100);
+            Thread.sleep(200);
             snapshot(pageImage,i);
         }
         writePageImage(pageImage,p);

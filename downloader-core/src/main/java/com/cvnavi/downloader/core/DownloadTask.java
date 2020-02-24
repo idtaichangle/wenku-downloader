@@ -48,7 +48,7 @@ public class DownloadTask{
 
     private void doDownload(){
         try {
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
         }
         AbstractDownloader downloader= DownloaderSelector.select(url);
@@ -62,7 +62,6 @@ public class DownloadTask{
                 }
                 if(meta!=null){
                     Document document=downloader.download(meta);
-                    document.getFile();
                     DownloadRecord record= DownloadRecordDao.find(getId());
                     record.setName(document.getMeta().getName());
                     if(document.getFile()!=null){

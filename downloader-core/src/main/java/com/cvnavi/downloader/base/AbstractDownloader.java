@@ -79,8 +79,8 @@ public abstract class AbstractDownloader {
     public Document download(Document.Meta meta) throws Exception {
         if(meta!=null){
             document.setMeta(meta);
-            prepareDownload();
-            Thread.sleep(100);
+            SwingUtilities.invokeLater(()->prepareDownload());
+            Thread.sleep(1000);
             for(int p=1;p<=meta.getTotalPage();p++){
                 BufferedImage pageImage=downloadPage(p);
                 if(pageImage!=null){

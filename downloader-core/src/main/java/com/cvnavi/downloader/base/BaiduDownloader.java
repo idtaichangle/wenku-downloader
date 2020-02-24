@@ -42,13 +42,13 @@ public class BaiduDownloader extends AbstractDownloader {
             String script="document.getElementsByClassName('reader-page-"+p+"')[0].scrollIntoView();";
             executeJavaScriptAsync(script);
 
-            Thread.sleep(2000);
+            Thread.sleep(1000);
 
             int segment=(int)Math.ceil(pageHeight/windowHeight);
             for(int i=0;i<segment;i++){
                 int scroll= (i==0?0: (int) windowHeight);
                 executeJavaScriptAsync("window.scrollBy(0,"+scroll+")");
-                Thread.sleep(100);
+                Thread.sleep(200);
                 snapshot(pageImage,i);
             }
             return pageImage;
