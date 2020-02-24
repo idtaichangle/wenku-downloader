@@ -9,4 +9,4 @@ do
   CLASSPATH=${CLASSPATH}:${i}
 done
 
-nohup java -cp $CLASSPATH com.cvnavi.downloader.web.Application > /dev/null 2>&1 &
+nohup java -cp $CLASSPATH com.cvnavi.downloader.Startup > /dev/null 2>&1 &

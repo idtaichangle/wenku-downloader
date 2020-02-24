@@ -6,4 +6,4 @@
  ::echo BASEDIR=%BASEDIR%
  set CLASSPATH=%BASEDIR%conf;%BASEDIR%lib\*;
  ::echo %CLASSPATH%
-java -cp %CLASSPATH% com.cvnavi.downloader.web.Application
+java -cp %CLASSPATH% com.cvnavi.downloader.Startup

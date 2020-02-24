@@ -2,7 +2,7 @@
 <configuration status="OFF">
 	<appenders>
 		<RollingFile name="RollingFile" fileName="${sys:DOWNLOADER_HOME}/logs/downloader.log"
-			filePattern="${sys:DOWNLOADER_HOME}logs/downloader-%d{yyyy-MM-dd}.log.gz">
+			filePattern="${sys:DOWNLOADER_HOME}/logs/downloader-%d{yyyy-MM-dd}.log.gz">
 			<PatternLayout pattern="%d{MM-dd HH:mm:ss} %-5level %logger{1} - %L - %msg%n" />
 			<Policies>
 				<TimeBasedTriggeringPolicy />
