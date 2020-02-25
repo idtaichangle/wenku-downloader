@@ -11,7 +11,7 @@ import static com.cvnavi.downloader.util.ImageUtil.isLightGray;
 public class LddocDownloader extends AbstractDownloader {
 
     public LddocDownloader(){
-        prepareJsFile="lddoc.js";
+        prepareJsFile="js/lddoc.js";
     }
 
 

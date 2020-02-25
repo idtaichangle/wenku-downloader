@@ -46,5 +46,5 @@ function prepare() {
 
 function goToPage(page) {
     docinReader.gotoPage(page,1);
-    $("#page_"+page)[0].scrollIntoView();
+    jQuery("#page_"+page)[0].scrollIntoView();
 }

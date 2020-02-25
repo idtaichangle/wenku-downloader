@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 public class Book118Downloader extends AbstractDownloader {
     public Book118Downloader(){
-        prepareJsFile="book118.js";
+        prepareJsFile="js/book118.js";
     }
 
     @Override

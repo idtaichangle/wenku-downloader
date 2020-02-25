@@ -6,6 +6,6 @@ package com.cvnavi.downloader.base;
 public class IshareDownloader extends AbstractDownloader {
 
     public IshareDownloader(){
-        prepareJsFile="ishare.js";
+        prepareJsFile="js/ishare.js";
     }
 }

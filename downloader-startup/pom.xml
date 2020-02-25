@@ -23,6 +23,7 @@
                         <!--注意从编译结果目录开始算目录结构-->
                         <exclude>/*.xml</exclude>
                         <exclude>/*.properties</exclude>
+                        <exclude>**/*.js</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -98,6 +99,7 @@
                                     <includes>
                                         <include> **/*.xml</include>
                                         <include> **/*.properties</include>
+                                        <include> **/*.js</include>
                                     </includes>
                                 </resource>
                             </resources>

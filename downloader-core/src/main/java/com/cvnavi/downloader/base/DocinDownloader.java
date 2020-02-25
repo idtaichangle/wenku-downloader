@@ -11,7 +11,7 @@ import static com.cvnavi.downloader.util.ImageUtil.isLightGray;
 public class DocinDownloader extends AbstractDownloader{
 
     public DocinDownloader(){
-        prepareJsFile="docin.js";
+        prepareJsFile="js/docin.js";
     }
 
     @Override

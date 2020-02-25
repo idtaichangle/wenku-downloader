@@ -7,7 +7,7 @@ package com.cvnavi.downloader.base;
 public class Doc88Downloader extends AbstractDownloader{
 
     public Doc88Downloader() {
-        prepareJsFile="doc88.js";
+        prepareJsFile="js/doc88.js";
     }
 
 }

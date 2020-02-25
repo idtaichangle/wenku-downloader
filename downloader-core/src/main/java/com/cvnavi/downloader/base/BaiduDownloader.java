@@ -12,7 +12,7 @@ import java.net.URL;
 public class BaiduDownloader extends AbstractDownloader {
 
     public BaiduDownloader(){
-        prepareJsFile="baidu.js";
+        prepareJsFile="js/baidu.js";
     }
 
     @Override

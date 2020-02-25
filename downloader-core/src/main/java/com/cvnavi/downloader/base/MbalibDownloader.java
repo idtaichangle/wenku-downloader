@@ -6,6 +6,6 @@ package com.cvnavi.downloader.base;
 public class MbalibDownloader extends AbstractDownloader {
 
     public MbalibDownloader(){
-        prepareJsFile="mbalib.js";
+        prepareJsFile="js/mbalib.js";
     }
 }
