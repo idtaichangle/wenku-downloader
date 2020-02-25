@@ -18,7 +18,6 @@ public class DangDangDownloader extends AbstractDownloader {
         return null;
     }
 
-    @Override
     public String getPageName() {
         return "book";
     }

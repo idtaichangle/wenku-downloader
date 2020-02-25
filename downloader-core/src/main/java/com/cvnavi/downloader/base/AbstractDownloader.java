@@ -34,27 +34,18 @@ public abstract class AbstractDownloader {
     float pageHeight;
     float pageLeftMargin;
     float screenScale;
+    int snapshotInterval=1000;
 
     protected Browser browser= BrowserFrame.instance().getBrowser();
-
-
-    public abstract String getPageName();
-
-    public abstract int  getPageCount();
-
-    public abstract BufferedImage downloadPage(int page) throws Exception;
-
-    public  String getDocType(){
-        return null;
-    }
 
     /**
      * 获取文档无数据。
      * @return
      */
     public Document.Meta fetchMeta(){
+        insertScript();
         Document.Meta meta=null;
-        String name=getPageName();
+        String name=getDocName();
         if(name!=null && name.length()>0){
             meta=new Document.Meta();
             meta.setName(name);
@@ -64,26 +55,61 @@ public abstract class AbstractDownloader {
         return meta;
     }
 
-    public  void prepareDownload(){
+    private  boolean scriptInserted=false;
+    private void insertScript(){
+        if(!scriptInserted){
+            String script=new String(ResourceReader.readFile(prepareJsFile));
+            if(script!=null && script.length()>0){
+                executeJavaScript(script);
+            }
+        }
+        scriptInserted=true;
+    }
 
+
+    public  String getDocType(){
+        return executeJavaScript("getDocType();");
+    }
+
+    public  String getDocName(){
+        return executeJavaScript("getDocName();");
+    }
+
+    public int  getPageCount(){
+        String page=executeJavaScript("getPageCount();");
+        if(page!=null && page.length()>0){
+            return Integer.parseInt(page);
+        }
+        return 0;
+    }
+
+
+    public  void prepareDownload() {
         windowHeight=getJsFloat("window.innerHeight");
-        String script=new String(ResourceReader.readFile(prepareJsFile));
-        if(script!=null && script.length()>0){
-            executeJavaScript(script);
+        screenScale= BitmapUtil.toBufferedImage(browser.bitmap()).getWidth()/getJsFloat("window.innerWidth");
+
+        executeJavaScriptAsync("prepare();");
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
         }
 
-        screenScale= BitmapUtil.toBufferedImage(browser.bitmap()).getWidth()/getJsFloat("window.innerWidth");
+        pageWidth=getJsFloat("getPageWidth();");
+        pageHeight=getJsFloat("getPageHeight();");
+        pageLeftMargin=getJsFloat("getPageLeftMargin();");
+        snapshotInterval= (int) Float.parseFloat(executeJavaScript("snapshotInterval();"));
     }
 
     public Document download() throws Exception {
         Document.Meta meta = fetchMeta();
         return download(meta);
     }
+
     public Document download(Document.Meta meta) throws Exception {
         if(meta!=null){
             document.setMeta(meta);
-            SwingUtilities.invokeLater(()->prepareDownload());
-            Thread.sleep(1000);
+            prepareDownload();
             for(int p=1;p<=meta.getTotalPage();p++){
                 BufferedImage pageImage=downloadPage(p);
                 if(pageImage!=null){
@@ -95,6 +121,24 @@ public abstract class AbstractDownloader {
             writePdf();
         }
         return document;
+    }
+
+    public BufferedImage downloadPage(int page) throws Exception{
+        BufferedImage pageImage=createImage();
+
+        executeJavaScriptAsync("goToPage("+page+")");
+        Thread.sleep(snapshotInterval);
+
+        int segment=(int)Math.ceil(pageHeight/windowHeight);
+
+        for(int i=0;i<segment;i++){
+            float scroll=i==0?0:windowHeight;;
+            executeJavaScriptAsync("window.scrollBy(0,"+scroll+")");
+            Thread.sleep(200);
+            snapshot(pageImage,i);
+        }
+        writePageImage(pageImage,page);
+        return pageImage;
     }
 
     protected String executeJavaScript(String script){
@@ -115,6 +159,11 @@ public abstract class AbstractDownloader {
     public float getJsFloat(String script){
         Double value=browser.mainFrame().get().executeJavaScript(script);
         return value.floatValue();
+    }
+
+    protected BufferedImage createImage(){
+        BufferedImage pageImage=new BufferedImage((int) (pageWidth*screenScale),(int)(pageHeight*screenScale),BufferedImage.TYPE_INT_RGB);
+        return pageImage;
     }
 
     protected void snapshot(BufferedImage pageImage,int segment){

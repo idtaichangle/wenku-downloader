@@ -23,7 +23,6 @@ public class Book118Downloader extends AbstractDownloader {
         return html;
     }
 
-    @Override
     public String getPageName() {
         String value=executeJavaScript("doc_title");
         return value;
