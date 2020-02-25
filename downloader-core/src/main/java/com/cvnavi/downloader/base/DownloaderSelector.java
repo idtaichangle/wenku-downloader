@@ -23,6 +23,9 @@ public class DownloaderSelector {
         }else if(url.contains("max.book118.com")){
             downloader=new Book118Downloader();
         }
+        if(downloader!=null){
+            downloader.setUrl(url);
+        }
         return downloader;
     }
 }

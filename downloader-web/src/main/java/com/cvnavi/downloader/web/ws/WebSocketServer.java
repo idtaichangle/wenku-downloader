@@ -27,8 +27,8 @@ public class WebSocketServer{
 
     public static DownloaderCallback callback=new DownloaderCallback() {
         @Override
-        public void metaReady(DownloadTask task, Document.Meta meta) {
-            WebSocketServer server=webSocketMap.get(task.getId());
+        public void metaReady(int taskId, Document.Meta meta) {
+            WebSocketServer server=webSocketMap.get(taskId);
             if(server!=null){
                 try {
                     HashMap<String,Object> map=new HashMap<>();
@@ -43,8 +43,8 @@ public class WebSocketServer{
         }
 
         @Override
-        public void downloadFinish(DownloadTask task, boolean success,String fileName) {
-            WebSocketServer server=webSocketMap.get(task.getId());
+        public void downloadFinish(int taskId, boolean success,String fileName) {
+            WebSocketServer server=webSocketMap.get(taskId);
             if(server!=null){
                 try {
                     HashMap<String,Object> map=new HashMap<>();

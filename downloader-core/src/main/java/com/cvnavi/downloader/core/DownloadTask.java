@@ -7,6 +7,9 @@ import com.cvnavi.downloader.base.DownloaderSelector;
 import com.cvnavi.downloader.browser.BrowserFrame;
 import com.cvnavi.downloader.db.dao.DownloadRecordDao;
 import com.cvnavi.downloader.db.model.DownloadRecord;
+import com.cvnavi.downloader.ocr.OcrTask;
+import com.cvnavi.downloader.ocr.PdfOcrQueue;
+import com.cvnavi.downloader.util.EncryptUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -24,9 +27,9 @@ public class DownloadTask{
     @Getter @Setter
     private String url;
     @Getter @Setter
-    private File result;
-    @Getter @Setter
     private DownloaderCallback callback;
+    @Getter @Setter
+    private Document result;
 
     private boolean downloading=false;
 
@@ -58,33 +61,35 @@ public class DownloadTask{
                 clearTmpDir();
                 Document.Meta meta=downloader.fetchMeta();
                 if(callback!=null){
-                    callback.metaReady(this,meta);
+                    callback.metaReady(getId(),meta);
                 }
                 if(meta!=null){
-                    Document document=downloader.download(meta);
+                    result=downloader.download(meta);
                     DownloadRecord record= DownloadRecordDao.find(getId());
-                    record.setName(document.getMeta().getName());
-                    if(document.getFile()!=null){
-                        String eName= Paths.get(document.getFile()).getFileName().
-                                toString().replace(".pdf","");
-                        record.setEncryptName(eName);
-                    }
+                    record.setName(result.getMeta().getName());
+                    record.setEncryptName(EncryptUtil.md5(getUrl()));
                     DownloadRecordDao.update(record);
-                    if(callback!=null){
-                        callback.downloadFinish(this,true,record.getEncryptName());
+
+                    if(result.getFile()!=null){
+                        OcrTask ocr=new OcrTask(this);
+                        PdfOcrQueue.getInstance().submitTask(ocr);
+                    }else{
+                        invokeCallback(false,null);
                     }
                 }else{
-                    if(callback!=null){
-                        callback.downloadFinish(this,false,null);
-                    }
+                    invokeCallback(false,null);
                 }
                 log.debug("finish download "+url);
             } catch (Exception e) {
                 log.error(e.getMessage(),e);
-                if(callback!=null){
-                    callback.downloadFinish(this,false,null);
-                }
+                invokeCallback(false,null);
             }
+        }
+    }
+
+    private void invokeCallback(boolean success,String fileName){
+        if(callback!=null){
+            callback.downloadFinish(getId(),success,fileName);
         }
     }
 

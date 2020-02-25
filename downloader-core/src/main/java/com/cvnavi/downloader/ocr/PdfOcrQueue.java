@@ -1,16 +1,22 @@
-package com.cvnavi.downloader.core;
+package com.cvnavi.downloader.ocr;
 
 import lombok.extern.log4j.Log4j2;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Log4j2
-public class DownloaderQueue extends LinkedBlockingQueue<DownloadTask>{
+public class PdfOcrQueue extends LinkedBlockingQueue<OcrTask> {
+
+    private static PdfOcrQueue instance=new PdfOcrQueue();
+
+    public static PdfOcrQueue getInstance(){
+        return instance;
+    }
 
     boolean running=true;
-    private DownloadTask STOP_QUEUE_FLAG=new DownloadTask();
+    private OcrTask STOP_QUEUE_FLAG=new OcrTask(null);
 
-    public DownloaderQueue(){
+    private PdfOcrQueue(){
         startQueue();
     }
 
@@ -18,17 +24,20 @@ public class DownloaderQueue extends LinkedBlockingQueue<DownloadTask>{
         new Thread(()->{
             try {
                 while(running){
-                    DownloadTask task=take();
+                    OcrTask task=take();
                     if(task==STOP_QUEUE_FLAG){
                         break;
                     }else{
-                        log.info("begin download task. url="+task.getUrl());
-                        task.download();
+                        task.doPdfOcr();
                     }
                 }
             } catch (InterruptedException e) {
             }
         }).start();
+    }
+
+    public void submitTask(OcrTask ocr) {
+        offer(ocr);
     }
 
     public void stopQueue(){

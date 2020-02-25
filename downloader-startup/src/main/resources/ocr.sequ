@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://ns.adobe.com/acrobat/workflow/2012" title="ocr" description="" majorVersion="1" minorVersion="0">
+	<Sources>
+		<File path="/C/tmp/pdf/ca31023eeadeea45877c3299ed6ec6a0.pdf"/>
+	</Sources>
+	<Group label="未标题">
+		<Command name="Cpt:CapturePages" pauseBefore="false" promptUser="false">
+			<Items>
+				<Item name="Downsample" type="integer" value="600"/>
+				<Item name="Format" type="integer" value="0"/>
+				<Item name="Language" type="integer" value="19"/>
+			</Items>
+		</Command>
+		<Command name="WorkflowPlaybackSaveFiles" pauseBefore="false" promptUser="false"/>
+	</Group>
+</Workflow>

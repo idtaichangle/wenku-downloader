@@ -11,6 +11,7 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.teamdev.jxbrowser.browser.Browser;
 import com.teamdev.jxbrowser.view.swing.BitmapUtil;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import javax.imageio.ImageIO;
@@ -22,6 +23,8 @@ import java.io.*;
 @Log4j2
 public abstract class AbstractDownloader {
 
+    @Setter
+    private String url;
     static String tmpDir= Config.TMP_DIR;
     protected String prepareJsFile=null;
     protected Document document=new Document();
@@ -132,8 +135,7 @@ public abstract class AbstractDownloader {
     protected  void writePdf() throws IOException, DocumentException {
         if(new File(tmpDir+File.separator+"1.png").exists()){
 
-            String name=document.getMeta().getName()+System.currentTimeMillis();
-            name= EncryptUtil.md5(name);
+            String name= EncryptUtil.md5(url);;
             String outputFile=Config.FILES_DIR+File.separator+name+".pdf";
             FileOutputStream fos = new FileOutputStream(outputFile);
 
