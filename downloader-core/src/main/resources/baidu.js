@@ -32,7 +32,7 @@ function prepare() {
 
 function goToPage(page) {
     if(getDocType().indexOf("ppt")>=0){
-
+        $(".reader-pageNo-"+page)[0].scrollIntoView();
     }else{
         $('.reader-page-'+page)[0].scrollIntoView();
     }

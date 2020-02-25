@@ -18,10 +18,9 @@ public class BaiduDownloader extends AbstractDownloader {
     @Override
     public BufferedImage downloadPage(int p) throws Exception {
         if(document.getMeta().getType().contains("ppt")){
-            String script="document.getElementsByClassName('reader-pageNo-"+p+"')[0].scrollIntoView();";
-            executeJavaScriptAsync(script);
-            Thread.sleep(1000);
-            script="$('.reader-pageNo-"+p+" div img').attr('src')";
+            executeJavaScriptAsync("goToPage("+p+")");
+            Thread.sleep(snapshotInterval);
+            String script="$('.reader-pageNo-"+p+" div img').attr('src')";
             String value=executeJavaScript(script);
             if(value!=null){
                 BufferedImage pageImage= ImageIO.read(new URL(value));
