@@ -8,17 +8,20 @@
         #container{
             width: 100%;
             height: 100%;
+            text-align: center;
         }
 
 
         #url{
             width:60%;
-            margin-left: 20%;
         }
     </style>
 </head>
 <body>
 <div id="container" style="display: none">
+    <div style="padding-top: 100px">
+        <span>将需要下载的文档的网址复制到输入框，然后点击预览。</span>
+    </div>
     <form id="form1" method="post" action="preview">
         <input id="url" type="text" name="url" required="true"><input type="submit" value="预览">
     </form>
@@ -27,7 +30,7 @@
 <script>
 
     function resizedw(){
-        var margin=$(window).height()*0.4;
+        var margin=$(window).height()*0.1;
         $("#form1").css("margin-top",margin);
     }
 
