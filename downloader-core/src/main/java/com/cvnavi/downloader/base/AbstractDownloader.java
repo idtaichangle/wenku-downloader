@@ -19,6 +19,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 
 @Log4j2
 public abstract class AbstractDownloader {
@@ -37,6 +40,19 @@ public abstract class AbstractDownloader {
     int snapshotInterval=1000;
 
     protected Browser browser= BrowserFrame.instance().getBrowser();
+
+    public String[] acceptHost(){
+        return new String[0];
+    }
+
+    public boolean accept(String url) {
+        try {
+            URL u=new URL(url);
+            return Arrays.asList(acceptHost()).contains(u.getHost());
+        } catch (MalformedURLException e) {
+        }
+        return false;
+    }
 
     /**
      * 获取文档无数据。

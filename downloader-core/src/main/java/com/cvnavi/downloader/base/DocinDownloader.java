@@ -14,6 +14,12 @@ public class DocinDownloader extends AbstractDownloader{
         prepareJsFile="js/docin.js";
     }
 
+    public String[] acceptHost(){
+        return new String[]{
+                "www.docin.com"
+        };
+    }
+
     @Override
     public BufferedImage downloadPage(int p) throws Exception {
         BufferedImage pageImage=super.downloadPage(p);

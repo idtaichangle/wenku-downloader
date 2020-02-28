@@ -8,4 +8,10 @@ public class MbalibDownloader extends AbstractDownloader {
     public MbalibDownloader(){
         prepareJsFile="js/mbalib.js";
     }
+
+    public String[] acceptHost(){
+        return new String[]{
+                "doc.mbalib.com"
+        };
+    }
 }

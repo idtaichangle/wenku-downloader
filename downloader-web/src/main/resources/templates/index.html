@@ -20,19 +20,11 @@
 <body>
 <div id="container" style="display: none">
     <form id="form1" method="post" action="preview">
-        <input id="url" type="text" name="url"><input type="submit" value="预览">
-        <input type="button" onclick="download();" value="下载">
+        <input id="url" type="text" name="url" required="true"><input type="submit" value="预览">
     </form>
 </div>
 </body>
 <script>
-    // $('#form1').submit(function() {
-    //     $.post("preview",{"url":$("#url").val()},function (result) {
-    //         console.log(result);
-    //     });
-    //     return false;
-    // });
-
 
     function resizedw(){
         var margin=$(window).height()*0.4;

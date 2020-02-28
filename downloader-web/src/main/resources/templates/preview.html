@@ -9,23 +9,27 @@
             width: 100%;
             text-align: center;
         }
+        .msg{
+            display: none;
+        }
     </style>
 </head>
 <body>
 <div id="container">
-    <img id="loading"  src="img/loading.gif">
-    <div id="meta" style="display: none">
-        正在准备文档，请耐心等待。<i class="doc-name"></i>
+    <img id="loading" class="msg" src="img/loading.gif">
+    <div id="meta" class="msg">
+        正在准备文档，请耐心等待。如果文档页数较多，可能要等待几分钟。
     </div>
-    <div id="preview" style="display: none">
+    <div id="preview" class="msg">
         <i class="doc-name"></i> 已就绪。点击<a id="d_link">下载</a>
     </div>
-    <div id="fail" style="display: none">
-        无法下载该文件。请稍后重试。
+    <div id="fail" class="msg">
+        无法下载该文件。请稍后重试。<a href="/">返回首页</a>
     </div>
 </div>
 </body>
 <script>
+    var taskCreated=[[${taskCreated}]];
     var id=[[${id}]];
     var fileName="";
 
@@ -36,17 +40,24 @@
     }
 
     function startWebsocket() {
-        var ws = new WebSocket('ws://' + location.host + '/downloader-ws'+'?id='+id);
+
+        var ws;
+        if(location.protocol.indexOf("https:")==0){
+            ws=new WebSocket('wss://' + location.host + '/downloader-ws'+'?id='+id);
+        }else{
+            ws=new WebSocket('ws://' + location.host + '/downloader-ws'+'?id='+id);
+        }
+
         ws.onmessage = function (result) {
             var json = JSON.parse(result.data);
+            $(".msg").hide();
             if(json.action=="fetch_meta"){
                 if(json.success){
                     $(".doc-name").text(json.meta.name);
+                    $("#loading").show();
                     $("#meta").show()
                 }
             }else if(json.action=="download"){
-                $("#loading").hide();
-                $("#meta").hide();
                 if(json.success){
                     $("#preview").show();
                     fileName=json.fileName;
@@ -59,7 +70,12 @@
     }
 
     $(function () {
-        startWebsocket();
+        if(taskCreated){
+            $("#loading").show();
+            startWebsocket();
+        }else{
+            $("#fail").show();
+        }
     });
 </script>
 </html>

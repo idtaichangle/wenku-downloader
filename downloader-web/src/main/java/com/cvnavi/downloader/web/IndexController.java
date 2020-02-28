@@ -1,6 +1,7 @@
 package com.cvnavi.downloader.web;
 
 import com.cvnavi.downloader.Config;
+import com.cvnavi.downloader.base.DownloaderSelector;
 import com.cvnavi.downloader.browser.BrowserFrame;
 import com.cvnavi.downloader.core.DownloadTask;
 import com.cvnavi.downloader.db.dao.DownloadRecordDao;
@@ -10,12 +11,14 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.Date;
+import java.util.HashMap;
 
 @RestController
 @Log4j2
@@ -26,28 +29,43 @@ public class IndexController extends BaseController{
         return new ModelAndView("index");
     }
 
+    @RequestMapping(value = "/preview",method = RequestMethod.GET)
+    public ModelAndView preview(){
+        return new ModelAndView("index");
+    }
     @RequestMapping(value = "/preview",method = RequestMethod.POST)
-    public Object preview(String url){
+    public ModelAndView preview(String url){
+
+        HashMap<String,Object> model=new HashMap<>();
+
         if(url!=null){
             url=url.toLowerCase().trim();
             if(!url.startsWith("http://") && !url.startsWith("https://")){
                 url="http://"+url;
             }
+            if(DownloaderSelector.accept(url)){
+                DownloadRecord record=new DownloadRecord();
+                record.setUrl(url);
+                record.setCreateTime(new Date().getTime());
+                DownloadRecordDao.insert(record);
+
+                DownloadTask task=new DownloadTask();
+                task.setId(record.getId());
+                task.setUrl(url);
+                task.setCallback(WebSocketServer.callback);
+                BrowserFrame.instance().submitDownloadTask(task);
+                model.put("taskCreated",true);
+                model.put("id",record.getId());
+                return new ModelAndView("preview",model);
+            }
         }
 
-        DownloadRecord record=new DownloadRecord();
-        record.setUrl(url);
-        record.setCreateTime(new Date().getTime());
-        DownloadRecordDao.insert(record);
-
-        DownloadTask task=new DownloadTask();
-        task.setId(record.getId());
-        task.setUrl(url);
-        task.setCallback(WebSocketServer.callback);
-
-        BrowserFrame.instance().submitDownloadTask(task);
-        return new ModelAndView("preview","id",record.getId());
+        model.put("taskCreated",false);
+        model.put("id",-1);
+        return new ModelAndView("preview",model);
     }
+
+
 
     @RequestMapping(value = "/download")
     public void download(@RequestParam String fileName,

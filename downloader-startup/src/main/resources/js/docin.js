@@ -41,6 +41,7 @@ function prepare() {
     jQuery('.reader_tools_bar_wrap').remove();
     document.getElementById('page_1').scrollIntoView();
     jQuery('#contentcontainer').css('padding-bottom','1000px');
+    jQuery("#page_1")[0].scrollIntoView();
 }
 
 

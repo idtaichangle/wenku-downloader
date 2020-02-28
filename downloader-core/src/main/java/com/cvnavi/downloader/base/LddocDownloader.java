@@ -14,6 +14,11 @@ public class LddocDownloader extends AbstractDownloader {
         prepareJsFile="js/lddoc.js";
     }
 
+    public String[] acceptHost(){
+        return new String[]{
+                "www.lddoc.cn"
+        };
+    }
 
     @Override
     public BufferedImage downloadPage(int p) throws Exception {

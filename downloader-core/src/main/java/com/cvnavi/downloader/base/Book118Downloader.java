@@ -15,6 +15,12 @@ public class Book118Downloader extends AbstractDownloader {
         prepareJsFile="js/book118.js";
     }
 
+    public String[] acceptHost(){
+        return new String[]{
+                "max.book118.com"
+        };
+    }
+
     @Override
     public String getDocType() {
         String html = browser.mainFrame().get().html();

@@ -28,6 +28,7 @@ function prepare() {
     $("#ft").remove();
     $(".tag-tips").remove();
     $("#reader-container-inner-1").css('padding-bottom','1000px');
+    $(".reader-pageNo-1")[0].scrollIntoView();
 }
 
 function goToPage(page) {

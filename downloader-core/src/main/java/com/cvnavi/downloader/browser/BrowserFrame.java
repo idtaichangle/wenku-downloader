@@ -66,9 +66,7 @@ public class BrowserFrame {
             nav.on(LoadFinished.class, (event)->{
                 latch.countDown();
             });
-            SwingUtilities.invokeLater(()->{
-                nav.loadUrl(url);
-            });
+            nav.loadUrl(url);
 
             if(observer!=null){
                 try {

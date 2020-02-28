@@ -8,4 +8,10 @@ public class IshareDownloader extends AbstractDownloader {
     public IshareDownloader(){
         prepareJsFile="js/ishare.js";
     }
+
+    public String[] acceptHost(){
+        return new String[]{
+                "ishare.iask.sina.com.cn"
+        };
+    }
 }

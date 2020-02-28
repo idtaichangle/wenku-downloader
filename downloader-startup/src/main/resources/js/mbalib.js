@@ -13,6 +13,7 @@ function prepare() {
     $(".reader-end-download").css("padding-top","1000px");
     $("body").css("overflow-x","hidden");
     $(".wjdx-close").click();
+    $("#page0")[0].scrollIntoView();
 }
 
 function goToPage(page) {

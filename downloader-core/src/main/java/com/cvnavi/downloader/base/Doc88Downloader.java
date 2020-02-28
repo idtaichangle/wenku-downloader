@@ -10,4 +10,9 @@ public class Doc88Downloader extends AbstractDownloader{
         prepareJsFile="js/doc88.js";
     }
 
+    public String[] acceptHost(){
+        return new String[]{
+                "www.doc88.com"
+        };
+    }
 }

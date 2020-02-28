@@ -4,6 +4,7 @@ package com.cvnavi.downloader.base;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -13,6 +14,12 @@ public class BaiduDownloader extends AbstractDownloader {
 
     public BaiduDownloader(){
         prepareJsFile="js/baidu.js";
+    }
+
+    public String[] acceptHost(){
+        return new String[]{
+                "wenku.baidu.com"
+        };
     }
 
     @Override
