@@ -4,6 +4,7 @@ package com.cvnavi.downloader.web.ws;
 import com.cvnavi.downloader.Document;
 import com.cvnavi.downloader.core.DownloadTask;
 import com.cvnavi.downloader.core.DownloaderCallback;
+import com.cvnavi.downloader.web.pay.PayCallback;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
@@ -32,7 +33,7 @@ public class WebSocketServer{
             if(server!=null){
                 try {
                     HashMap<String,Object> map=new HashMap<>();
-                    map.put("action","fetch_meta");
+                    map.put("type","FETCH_META_RESULT");
                     map.put("success",true);
                     map.put("meta",meta);
                     server.sendMessage(toJsonStr(map));
@@ -43,18 +44,32 @@ public class WebSocketServer{
         }
 
         @Override
-        public void downloadFinish(int taskId, boolean success,String fileName) {
+        public void documentReady(int taskId, boolean success, String fileName) {
             WebSocketServer server=webSocketMap.get(taskId);
             if(server!=null){
                 try {
                     HashMap<String,Object> map=new HashMap<>();
-                    map.put("action","download");
+                    map.put("type","FETCH_DOCUMENT_RESULT");
                     map.put("success",success);
                     map.put("fileName",fileName);
                     server.sendMessage(toJsonStr(map));
                 } catch (IOException e) {
                     log.error(e.getMessage());
                 }
+            }
+        }
+    };
+
+    public static PayCallback payCallback= (success, taskId) -> {
+        WebSocketServer server=webSocketMap.get(taskId);
+        if(server!=null){
+            try {
+                HashMap<String,Object> map=new HashMap<>();
+                map.put("type","PAY_RESULT");
+                map.put("success",success);
+                server.sendMessage(toJsonStr(map));
+            } catch (IOException e) {
+                log.error(e.getMessage());
             }
         }
     };

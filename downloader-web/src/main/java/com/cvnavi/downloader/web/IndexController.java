@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 
 @RestController
@@ -33,6 +36,7 @@ public class IndexController extends BaseController{
     public ModelAndView preview(){
         return new ModelAndView("index");
     }
+
     @RequestMapping(value = "/preview",method = RequestMethod.POST)
     public ModelAndView preview(String url){
 
@@ -64,8 +68,6 @@ public class IndexController extends BaseController{
         model.put("id",-1);
         return new ModelAndView("preview",model);
     }
-
-
 
     @RequestMapping(value = "/download")
     public void download(@RequestParam String fileName,
@@ -109,4 +111,18 @@ public class IndexController extends BaseController{
             }
         }
     }
+
+    @RequestMapping(value = "/downloadRecord")
+    public ModelAndView downloadRecord(@RequestParam(defaultValue = "1") int pageIndex,
+                               @RequestParam(defaultValue = "10") int pageSize){
+        Collection<DownloadRecord> list= DownloadRecordDao.list(pageIndex,pageSize);
+        return new ModelAndView("download_record","list",list);
+    }
+
+
+    @RequestMapping("/test")
+    public ModelAndView test(){
+        return new ModelAndView("test");
+    }
+
 }

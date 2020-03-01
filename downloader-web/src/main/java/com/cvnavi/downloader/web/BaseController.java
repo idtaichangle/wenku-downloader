@@ -16,4 +16,12 @@ public class BaseController {
         map.put("msg",msg);
         return map;
     }
+
+    public HashMap<String,Object> result(boolean success,String msg,HashMap<String,Object>data){
+        HashMap<String,Object> map=new HashMap<>();
+        map.put("success",success);
+        map.put("msg",msg);
+        map.put("data",data);
+        return map;
+    }
 }

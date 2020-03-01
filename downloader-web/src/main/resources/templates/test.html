@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文档下载</title>
+    <script th:replace="head"></script>
+    <style>
+
+        .modal-body{
+            text-align: center;
+        }
+        .modal-body img{
+            width: 260px;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+
+<div id="preview" class="msg">
+    <i class="doc-name"></i> 已就绪。点击<a href="javascript:showPay(1);">微信扫码</a> 或<a href="javascript:showPay(2);">支付宝扫码</a> 支付后下载。
+</div>
+
+<div id="payModal" class="modal" tabindex="-1" role="dialog" data-backdrop="static" >
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">我已支付</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+    var id="1";
+    function showPay(payType) {
+        $.post("createPayOrder",{"taskId":id,"payType":payType},function (result) {
+            if(result.success){
+                $(".modal-body").html("<img src='"+result.data.qr_img+"'/>");
+                $('#payModal').modal();
+            }
+        })
+    }
+
+    function startWebsocket() {
+
+        var ws;
+        if(location.protocol.indexOf("https:")==0){
+            ws=new WebSocket('wss://' + location.host + '/downloader-ws'+'?id='+id);
+        }else{
+            ws=new WebSocket('ws://' + location.host + '/downloader-ws'+'?id='+id);
+        }
+
+        ws.onmessage = function (result) {
+            var json = JSON.parse(result.data);
+            $(".msg").hide();
+            if(json.type=="PAY_RESULT"){
+                $('#payModal').modal('hide');
+            }
+        }
+    }
+
+    $(function () {
+        startWebsocket();
+    });
+</script>
+</html>

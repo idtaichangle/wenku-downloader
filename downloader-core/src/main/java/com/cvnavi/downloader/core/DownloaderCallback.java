@@ -4,5 +4,5 @@ import com.cvnavi.downloader.Document;
 
 public interface DownloaderCallback {
     void metaReady(int taskId, Document.Meta meta);
-    void downloadFinish(int taskId, boolean success,String fileName);
+    void documentReady(int taskId, boolean success, String fileName);
 }

@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -89,7 +88,7 @@ public class DownloadTask{
 
     private void invokeCallback(boolean success,String fileName){
         if(callback!=null){
-            callback.downloadFinish(getId(),success,fileName);
+            callback.documentReady(getId(),success,fileName);
         }
     }
 

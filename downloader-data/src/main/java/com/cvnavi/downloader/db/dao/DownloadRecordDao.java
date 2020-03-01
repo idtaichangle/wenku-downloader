@@ -5,9 +5,35 @@ import com.cvnavi.downloader.db.model.DownloadRecord;
 import lombok.extern.log4j.Log4j2;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Log4j2
 public class DownloadRecordDao {
+
+
+    public static Collection<DownloadRecord> list(int pageIndex, int pageSize) {
+        List<DownloadRecord> list=new ArrayList<>();
+        try {
+            Connection con = DBConnection.getInstance().get();
+            if (con != null) {
+                Statement st = con.createStatement();
+                String sql = " select * from download_record order by id desc OFFSET "+((pageIndex-1)*pageSize)+" ROWS FETCH NEXT "+pageSize+" ROWS ONLY";
+                ResultSet rs = st.executeQuery(sql);
+                while (rs.next()) {
+                    DownloadRecord dr=new DownloadRecord();
+                    fillValue(dr,rs);
+                    list.add(dr);
+                }
+                rs.close();
+                st.close();
+            }
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return list;
+    }
 
     public static DownloadRecord find(int id) {
         DownloadRecord dr=null;
@@ -108,4 +134,5 @@ public class DownloadRecordDao {
         dr.setName(rs.getString("name"));
         dr.setEncryptName(rs.getString("encrypt_name"));
     }
+
 }

@@ -88,7 +88,7 @@ public class OcrTask {
             }
         }
         if(downloadTask.getCallback()!=null){
-            downloadTask.getCallback().downloadFinish(downloadTask.getId(),true, EncryptUtil.md5(downloadTask.getUrl()));
+            downloadTask.getCallback().documentReady(downloadTask.getId(),true, EncryptUtil.md5(downloadTask.getUrl()));
         }
     }
 }

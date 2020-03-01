@@ -12,6 +12,12 @@
         .msg{
             display: none;
         }
+        .modal-body{
+            text-align: center;
+        }
+        .modal-body img{
+            width: 260px;
+        }
     </style>
 </head>
 <body>
@@ -21,10 +27,45 @@
         正在准备文档，请耐心等待。如果文档页数较多，可能要等待几分钟。
     </div>
     <div id="preview" class="msg">
-        <i class="doc-name"></i> 已就绪。点击<a id="d_link">下载</a>
+        <i class="doc-name"></i> 已就绪。
+        点击<a href="javascript:showPay(1);">微信扫码</a> 或<a href="javascript:showPay(2);">支付宝扫码</a> 支付后下载。
     </div>
     <div id="fail" class="msg">
         无法下载该文件。请稍后重试。<a href="/">返回首页</a>
+    </div>
+</div>
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="payModal" class="modal" tabindex="-1" role="dialog" data-backdrop="static" >
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">我已支付</button>
+            </div>
+        </div>
     </div>
 </div>
 </body>
@@ -33,10 +74,13 @@
     var id=[[${id}]];
     var fileName="";
 
-    function download() {
-        $.post("download?fileName="+fileName,function (result) {
-            console.log(result);
-        });
+    function showPay(payType) {
+        $.post("createPayOrder",{"taskId":id,"payType":payType},function (result) {
+            if(result.success){
+                $(".modal-body").html("<img src='"+result.data.qr_img+"'/>");
+                $('#payModal').modal();
+            }
+        })
     }
 
     function startWebsocket() {
@@ -51,13 +95,13 @@
         ws.onmessage = function (result) {
             var json = JSON.parse(result.data);
             $(".msg").hide();
-            if(json.action=="fetch_meta"){
+            if(json.type=="FETCH_META_RESULT"){
                 if(json.success){
                     $(".doc-name").text(json.meta.name);
                     $("#loading").show();
                     $("#meta").show()
                 }
-            }else if(json.action=="download"){
+            }else if(json.type=="FETCH_DOCUMENT_RESULT"){
                 if(json.success){
                     $("#preview").show();
                     fileName=json.fileName;
@@ -65,6 +109,8 @@
                 }else{
                     $("#fail").show();
                 }
+            }else if(json.type=="PAY_RESULT"){
+                $('#payModal').modal('hide');
             }
         }
     }
