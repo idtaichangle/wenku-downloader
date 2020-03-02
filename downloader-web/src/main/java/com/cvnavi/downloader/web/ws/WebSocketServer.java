@@ -4,6 +4,10 @@ package com.cvnavi.downloader.web.ws;
 import com.cvnavi.downloader.Document;
 import com.cvnavi.downloader.core.DownloadTask;
 import com.cvnavi.downloader.core.DownloaderCallback;
+import com.cvnavi.downloader.db.dao.DownloadFileDao;
+import com.cvnavi.downloader.db.dao.DownloadRecordDao;
+import com.cvnavi.downloader.db.model.DownloadFile;
+import com.cvnavi.downloader.db.model.DownloadRecord;
 import com.cvnavi.downloader.web.pay.PayCallback;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,6 +71,17 @@ public class WebSocketServer{
                 HashMap<String,Object> map=new HashMap<>();
                 map.put("type","PAY_RESULT");
                 map.put("success",success);
+
+                if(success){
+                    DownloadRecord dr= DownloadRecordDao.find(taskId);
+                    if(dr!=null && dr.getFileId()>0){
+                        DownloadFile df= DownloadFileDao.find(dr.getFileId());
+                        if(df!=null){
+                            map.put("link",df.getEncryptName());
+                        }
+                    }
+                }
+
                 server.sendMessage(toJsonStr(map));
             } catch (IOException e) {
                 log.error(e.getMessage());
@@ -115,7 +130,7 @@ public class WebSocketServer{
      */
     @OnError
     public void onError(Session session, Throwable e) {
-        log.error(e.getMessage(), e);
+        log.error(e.getMessage());
 //        error.printStackTrace();
     }
 

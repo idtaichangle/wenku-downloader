@@ -4,7 +4,9 @@ import com.cvnavi.downloader.Config;
 import com.cvnavi.downloader.base.DownloaderSelector;
 import com.cvnavi.downloader.browser.BrowserFrame;
 import com.cvnavi.downloader.core.DownloadTask;
+import com.cvnavi.downloader.db.dao.DownloadFileDao;
 import com.cvnavi.downloader.db.dao.DownloadRecordDao;
+import com.cvnavi.downloader.db.model.DownloadFile;
 import com.cvnavi.downloader.db.model.DownloadRecord;
 import com.cvnavi.downloader.web.ws.WebSocketServer;
 import lombok.extern.log4j.Log4j2;
@@ -48,10 +50,15 @@ public class IndexController extends BaseController{
                 url="http://"+url;
             }
             if(DownloaderSelector.accept(url)){
+                DownloadFile df=DownloadFileDao.findByUrl(url);
                 DownloadRecord record=new DownloadRecord();
                 record.setUrl(url);
-                record.setCreateTime(new Date().getTime());
+                record.setCreateTime(System.currentTimeMillis());
+                if(df!=null){
+                    record.setFileId(df.getId());
+                }
                 DownloadRecordDao.insert(record);
+
 
                 DownloadTask task=new DownloadTask();
                 task.setId(record.getId());
@@ -69,13 +76,28 @@ public class IndexController extends BaseController{
         return new ModelAndView("preview",model);
     }
 
+    @RequestMapping("/queryTaskFile")
+    public Object queryTaskFile(int taskId){
+        DownloadRecord record=DownloadRecordDao.find(taskId);
+        if(record!=null){
+            DownloadFile df=DownloadFileDao.findByUrl(record.getUrl());
+            if(df!=null){
+                HashMap<String,Object> data=new HashMap<>();
+                data.put("name",df.getName());
+                data.put("fileName",df.getEncryptName());
+                return result(true,"文件已经下载",data);
+            }
+        }
+        return result(false,"文件已经尚未下载");
+    }
+
     @RequestMapping(value = "/download")
     public void download(@RequestParam String fileName,
                          @RequestParam(defaultValue = "true") boolean download,
                            HttpServletResponse response){
         response.setCharacterEncoding("UTF-8");
 
-        DownloadRecord record=DownloadRecordDao.findByEncryptName(fileName);
+        DownloadFile record= DownloadFileDao.findByEncryptName(fileName);
         File f=null;
         if(record!=null){
             f=new File(Config.FILES_DIR+File.separator +record.getEncryptName()+".pdf");

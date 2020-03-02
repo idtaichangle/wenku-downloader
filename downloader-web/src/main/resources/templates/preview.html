@@ -26,9 +26,14 @@
     <div id="meta" class="msg">
         正在准备文档，请耐心等待。如果文档页数较多，可能要等待几分钟。
     </div>
-    <div id="preview" class="msg">
+    <div id="ready" class="msg">
         <i class="doc-name"></i> 已就绪。
+    </div>
+    <div id="pay_instruction" class="msg">
         点击<a href="javascript:showPay(1);">微信扫码</a> 或<a href="javascript:showPay(2);">支付宝扫码</a> 支付后下载。
+    </div>
+    <div id="download" class="msg">
+        <a id="d_link">点击此处下载</a>
     </div>
     <div id="fail" class="msg">
         无法下载该文件。请稍后重试。<a href="/">返回首页</a>
@@ -83,6 +88,18 @@
         })
     }
 
+    function queryTask() {
+        $.post("/queryTaskFile",{"taskId":id},function (result) {
+            if(result.success){
+                $(".msg").hide();
+                $(".doc-name").text(result.data.name);
+                $("#ready").show();
+                $("#pay_instruction").show();
+                $("#d_link").attr("href","download?fileName="+result.data.fileName);
+            }
+        });
+    }
+
     function startWebsocket() {
 
         var ws;
@@ -103,14 +120,18 @@
                 }
             }else if(json.type=="FETCH_DOCUMENT_RESULT"){
                 if(json.success){
-                    $("#preview").show();
+                    $("#ready").show();
+                    $("#pay_instruction").show();
                     fileName=json.fileName;
-                    $("#d_link").attr("href","download?fileName="+fileName);
                 }else{
                     $("#fail").show();
                 }
             }else if(json.type=="PAY_RESULT"){
-                $('#payModal').modal('hide');
+                if(json.success){
+                    $('#payModal').modal('hide');
+                    $("#pay_instruction").hide();
+                    $("#d_link").attr("href","download?fileName="+json.link);
+                }
             }
         }
     }
@@ -118,6 +139,7 @@
     $(function () {
         if(taskCreated){
             $("#loading").show();
+            queryTask();
             startWebsocket();
         }else{
             $("#fail").show();

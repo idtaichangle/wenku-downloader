@@ -57,14 +57,16 @@ public class DownloadRecordDao {
         return dr;
     }
 
-    public static DownloadRecord findByEncryptName(String name) {
+    public static DownloadRecord findByUrl(String url) {
         DownloadRecord dr=null;
         try {
             Connection con = DBConnection.getInstance().get();
             if (con != null) {
                 Statement st = con.createStatement();
-                String sql = "select * from download_record where encrypt_name='"+name+"'";
-                ResultSet rs = st.executeQuery(sql);
+                String sql = "select * from download_record where url=?";
+                PreparedStatement ps=con.prepareStatement(sql);
+                ps.setString(1,url);
+                ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     dr=new DownloadRecord();
                     fillValue(dr,rs);
@@ -83,10 +85,11 @@ public class DownloadRecordDao {
         try {
             Connection con = DBConnection.getInstance().get();
             if (con != null) {
-                String sql = "insert into  download_record(url,create_time,name,encrypt_name) values(?,?,?,?)";
+                String sql = "insert into  download_record(url,create_time,file_id) values(?,?,?)";
                 PreparedStatement st = con.prepareStatement(sql);
                 setStatement(st, record);
                 st.execute();
+
                 st = con.prepareStatement("select max(id) from download_record");
                 ResultSet rs = st.executeQuery();
                 while (rs.next()) {
@@ -106,7 +109,7 @@ public class DownloadRecordDao {
         try {
             Connection con = DBConnection.getInstance().get();
             if (con != null) {
-                String sql = "update  download_record set url=?,create_time=?,name=?,encrypt_name=? where id="+record.getId();
+                String sql = "update  download_record set url=?,create_time=?,file_id=? where id="+record.getId();
                 PreparedStatement st = con.prepareStatement(sql);
                 setStatement(st, record);
                 st.execute();
@@ -122,8 +125,7 @@ public class DownloadRecordDao {
     private static void setStatement(PreparedStatement st, DownloadRecord recored) throws SQLException {
         st.setString(1,recored.getUrl());
         st.setLong(2,recored.getCreateTime());
-        st.setString(3,recored.getName());
-        st.setString(4,recored.getEncryptName());
+        st.setInt(3,recored.getFileId());
     }
 
 
@@ -131,8 +133,7 @@ public class DownloadRecordDao {
         dr.setId(rs.getInt("id"));
         dr.setUrl(rs.getString("url"));
         dr.setCreateTime(rs.getLong("create_time"));
-        dr.setName(rs.getString("name"));
-        dr.setEncryptName(rs.getString("encrypt_name"));
+        dr.setFileId(rs.getInt("file_id"));
     }
 
 }

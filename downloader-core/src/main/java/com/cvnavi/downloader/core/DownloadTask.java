@@ -5,7 +5,9 @@ import com.cvnavi.downloader.Document;
 import com.cvnavi.downloader.base.AbstractDownloader;
 import com.cvnavi.downloader.base.DownloaderSelector;
 import com.cvnavi.downloader.browser.BrowserFrame;
+import com.cvnavi.downloader.db.dao.DownloadFileDao;
 import com.cvnavi.downloader.db.dao.DownloadRecordDao;
+import com.cvnavi.downloader.db.model.DownloadFile;
 import com.cvnavi.downloader.db.model.DownloadRecord;
 import com.cvnavi.downloader.ocr.OcrTask;
 import com.cvnavi.downloader.ocr.PdfOcrQueue;
@@ -35,16 +37,21 @@ public class DownloadTask{
     private Thread thread= new Thread(() -> doDownload());
 
     public void download(){
-        downloading=false;
-        BrowserFrame.instance().browse(getUrl(),(event)->{
-            if(!downloading){//防止多次出发LoadFinished事件。
-                downloading=true;
-                thread.start();
+        DownloadFile record= DownloadFileDao.findByUrl(getUrl());
+        if(record!=null){
+            invokeCallback(true,record.getEncryptName());
+        }else{
+            downloading=false;
+            BrowserFrame.instance().browse(getUrl(),(event)->{
+                if(!downloading){//防止多次出发LoadFinished事件。
+                    downloading=true;
+                    thread.start();
+                }
+            });
+            try {
+                thread.join(60*1000);
+            } catch (InterruptedException e) {
             }
-        });
-        try {
-            thread.join(60*1000);
-        } catch (InterruptedException e) {
         }
     }
 
@@ -64,14 +71,27 @@ public class DownloadTask{
                 }
                 if(meta!=null){
                     result=downloader.download(meta);
-                    DownloadRecord record= DownloadRecordDao.find(getId());
-                    record.setName(result.getMeta().getName());
-                    record.setEncryptName(EncryptUtil.md5(getUrl()));
-                    DownloadRecordDao.update(record);
 
                     if(result.getFile()!=null){
-                        OcrTask ocr=new OcrTask(this);
-                        PdfOcrQueue.getInstance().submitTask(ocr);
+                        DownloadFile df=new DownloadFile();
+                        df.setUrl(getUrl());
+                        df.setCreateTime(System.currentTimeMillis());
+                        df.setName(result.getMeta().getName());
+                        df.setEncryptName(EncryptUtil.md5(getUrl()));
+                        df.setType(meta.getType());
+                        df.setTotalPages(meta.getTotalPage());
+                        DownloadFileDao.insert(df);
+
+                        DownloadRecord record= DownloadRecordDao.find(getId());
+                        record.setFileId(df.getId());
+                        DownloadRecordDao.update(record);
+
+                        if(Config.PDF_OCR){
+                            OcrTask ocr=new OcrTask(this);
+                            PdfOcrQueue.getInstance().submitTask(ocr);
+                        }else{
+                            invokeCallback(true,df.getEncryptName());
+                        }
                     }else{
                         invokeCallback(false,null);
                     }

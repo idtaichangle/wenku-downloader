@@ -58,6 +58,8 @@ public class PayController  extends BaseController{
     @RequestMapping(value = "/payNotify")
     public Object payNotify(String payId,int type,float price,float reallyPrice,String param,String sign) {
 
+        log.info("payNotify:payId="+payId+",type="+type+",price="+price+",reallyPrice="+reallyPrice+",param="+param);
+
         WebSocketServer.payCallback.payResult(true,Integer.parseInt(param));
         return "success";
     }

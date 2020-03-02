@@ -3,9 +3,20 @@ CREATE TABLE download_record
 id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 url VARCHAR(1024) NOT NULL,
 create_time BIGINT NOT NULL,
-name VARCHAR(1024),
-encrypt_name VARCHAR(64),
-CONSTRAINT primary_key PRIMARY KEY (id)
+file_id INTEGER,
+CONSTRAINT pk_dr PRIMARY KEY (id)
 );
 
-CREATE INDEX index1 ON download_record(encrypt_name);
+CREATE TABLE download_file
+(
+id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+url VARCHAR(1024) NOT NULL,
+create_time BIGINT NOT NULL,
+name VARCHAR(1024),
+encrypt_name VARCHAR(64),
+type VARCHAR(64),
+total_pages SMALLINT,
+CONSTRAINT pk_df PRIMARY KEY (id)
+);
+
+CREATE INDEX index1 ON download_file(encrypt_name);

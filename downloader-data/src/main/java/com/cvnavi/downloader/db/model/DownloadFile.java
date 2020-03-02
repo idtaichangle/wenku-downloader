@@ -3,9 +3,12 @@ package com.cvnavi.downloader.db.model;
 import lombok.Data;
 
 @Data
-public class DownloadRecord {
+public class DownloadFile {
     private int id;
     private String url;
     private long createTime;
-    private int fileId;
+    private String name;
+    private String encryptName;
+    private String type;
+    private int totalPages;
 }
