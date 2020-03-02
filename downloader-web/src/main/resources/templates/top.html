@@ -1,0 +1,56 @@
+<div class="top" style="width: 100%;">
+    <div style="width: 100%;text-align: right;padding-top: 10px;padding-right: 20px;">
+        <a href="javascript:showLogin();">登录</a>
+    </div>
+
+    <div id="loginModal" class="modal" tabindex="-1" role="dialog" data-backdrop="static" >
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <form id="loginForm" action="/" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">登录</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="email" class="col-form-label">邮箱:</label>
+                            <input type="text" class="form-control" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-form-label">密码:</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-primary">登录</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showLogin() {
+            $('#loginModal').modal();
+        }
+
+        $(document).ready(function() {
+            $('#loginForm').on('submit', function(e){
+                if($("#email").val().indexOf('@')<0){
+                    alert("请输入要正确的邮箱");
+                }
+                $.post("/login",
+                    {"email":$("#email").val(),"password":$("#password").val()},
+                    function (result) {
+                        if(result.success){
+                            $("#loginModal").modal('hide');
+                        }
+                    });
+                e.preventDefault();
+
+            });
+        });
+    </script>
+</div>

@@ -28,7 +28,10 @@ function prepare() {
     $("#ft").remove();
     $(".tag-tips").remove();
     $("#reader-container-inner-1").css('padding-bottom','1000px');
-    $(".reader-pageNo-1")[0].scrollIntoView();
+
+    setTimeout(function () {
+        goToPage(1);
+    },200);
 }
 
 function goToPage(page) {
@@ -37,4 +40,4 @@ function goToPage(page) {
     }else{
         $('.reader-page-'+page)[0].scrollIntoView();
     }
-}
+}1

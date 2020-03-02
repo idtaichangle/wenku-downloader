@@ -22,7 +22,9 @@ function prepare() {
     $("div.icon-detail-wrap").remove();
     $(".detail-main").css("padding-bottom","1000px");
     $("body").css("overflow-x","hidden");
-    $("div[data-num='1']")[0].scrollIntoView();
+    setTimeout(function () {
+        goToPage(1);
+    },200);
 }
 
 function goToPage(page) {

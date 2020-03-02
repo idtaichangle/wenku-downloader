@@ -15,7 +15,9 @@ function prepare() {
     $(".edit-tips").remove();
     $(".skintips").remove();
     $("#pageContainer").css("padding-bottom","1000px");
-    $("#outer_page_1")[0].scrollIntoView();
+    setTimeout(function () {
+        goToPage(1);
+    },200);
 }
 
 function goToPage(page) {

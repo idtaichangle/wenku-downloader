@@ -13,7 +13,9 @@ function prepare() {
     $("#boxright").remove();
     $("#page_more").css("padding-bottom","1000px");
     $("body").css("overflow-x","hidden");
-    $("#outer_page_1")[0].scrollIntoView();
+    setTimeout(function () {
+        goToPage(1);
+    },200);
 }
 
 function goToPage(page) {

@@ -21,6 +21,7 @@
     </style>
 </head>
 <body>
+<div th:replace="top.html"></div>
 <div id="container">
     <img id="loading" class="msg" src="img/loading.gif">
     <div id="meta" class="msg">
@@ -95,6 +96,7 @@
                 $(".doc-name").text(result.data.name);
                 $("#ready").show();
                 $("#pay_instruction").show();
+                $("#download").show();
                 $("#d_link").attr("href","download?fileName="+result.data.fileName);
             }
         });
