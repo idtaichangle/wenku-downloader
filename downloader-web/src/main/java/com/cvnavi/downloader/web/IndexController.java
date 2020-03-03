@@ -8,9 +8,11 @@ import com.cvnavi.downloader.db.dao.DownloadFileDao;
 import com.cvnavi.downloader.db.dao.DownloadRecordDao;
 import com.cvnavi.downloader.db.model.DownloadFile;
 import com.cvnavi.downloader.db.model.DownloadRecord;
+import com.cvnavi.downloader.util.ResourceReader;
 import com.cvnavi.downloader.web.ws.WebSocketServer;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
@@ -74,6 +77,24 @@ public class IndexController extends BaseController{
         model.put("taskCreated",false);
         model.put("id",-1);
         return new ModelAndView("preview",model);
+    }
+
+    @GetMapping(value="/previewImg", produces = MediaType.IMAGE_PNG_VALUE)
+    public @ResponseBody byte[] getPreviewImg(int taskId,HttpServletResponse resp){
+
+        DownloadRecord dr=DownloadRecordDao.find(taskId);
+        if(dr!=null && dr.getFileId()>0){
+            DownloadFile df=DownloadFileDao.find(dr.getFileId());
+            if(df!=null && df.getEncryptName()!=null){
+                String file=Config.FILES_DIR+File.separator+df.getEncryptName()+".png";
+                try {
+                    return Files.readAllBytes(Paths.get(file));
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
+            }
+        }
+        return ResourceReader.readFile("static/img/not_found.png");
     }
 
     @RequestMapping("/queryTaskFile")

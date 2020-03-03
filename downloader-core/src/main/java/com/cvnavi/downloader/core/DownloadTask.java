@@ -73,18 +73,7 @@ public class DownloadTask{
                     result=downloader.download(meta);
 
                     if(result.getFile()!=null){
-                        DownloadFile df=new DownloadFile();
-                        df.setUrl(getUrl());
-                        df.setCreateTime(System.currentTimeMillis());
-                        df.setName(result.getMeta().getName());
-                        df.setEncryptName(EncryptUtil.md5(getUrl()));
-                        df.setType(meta.getType());
-                        df.setTotalPages(meta.getTotalPage());
-                        DownloadFileDao.insert(df);
-
-                        DownloadRecord record= DownloadRecordDao.find(getId());
-                        record.setFileId(df.getId());
-                        DownloadRecordDao.update(record);
+                        DownloadFile df=updateDatabase(result);
 
                         if(Config.PDF_OCR){
                             OcrTask ocr=new OcrTask(this);
@@ -104,6 +93,22 @@ public class DownloadTask{
                 invokeCallback(false,null);
             }
         }
+    }
+
+    private DownloadFile updateDatabase(Document doc) {
+        DownloadFile df=new DownloadFile();
+        df.setUrl(getUrl());
+        df.setCreateTime(System.currentTimeMillis());
+        df.setName(result.getMeta().getName());
+        df.setEncryptName(EncryptUtil.md5(getUrl()));
+        df.setType(doc.getMeta().getType());
+        df.setTotalPages(doc.getMeta().getTotalPage());
+        DownloadFileDao.insert(df);
+
+        DownloadRecord record= DownloadRecordDao.find(getId());
+        record.setFileId(df.getId());
+        DownloadRecordDao.update(record);
+        return df;
     }
 
     private void invokeCallback(boolean success,String fileName){

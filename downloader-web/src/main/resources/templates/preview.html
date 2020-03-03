@@ -18,26 +18,36 @@
         .modal-body img{
             width: 260px;
         }
+        #preview_img{
+            width: 700px;
+        }
     </style>
 </head>
 <body>
-<div th:replace="top.html"></div>
+<div th:replace="nav.html"></div>
 <div id="container">
-    <img id="loading" class="msg" src="img/loading.gif">
-    <div id="meta" class="msg">
-        正在准备文档，请耐心等待。如果文档页数较多，可能要等待几分钟。
+    <div style="padding: 20px">
+        <img id="loading" class="msg" src="img/loading.gif">
+        <div id="meta" class="msg">
+            正在准备文档，请耐心等待。如果文档页数较多，可能要等待几分钟。
+        </div>
+        <div id="fail" class="msg">
+            无法下载该文件。请稍后重试。<a href="/">返回首页</a>
+        </div>
     </div>
-    <div id="ready" class="msg">
-        <i class="doc-name"></i> 已就绪。
+    <div id="preview" class="msg" style="float: left;background:gray;padding: 8px;margin: 10px;">
+        <img id="preview_img">
     </div>
-    <div id="pay_instruction" class="msg">
-        点击<a href="javascript:showPay(1);">微信扫码</a> 或<a href="javascript:showPay(2);">支付宝扫码</a> 支付后下载。
-    </div>
-    <div id="download" class="msg">
-        <a id="d_link">点击此处下载</a>
-    </div>
-    <div id="fail" class="msg">
-        无法下载该文件。请稍后重试。<a href="/">返回首页</a>
+    <div style="padding: 20px">
+        <div id="ready" class="msg">
+            <i class="doc-name"></i> 已就绪。
+        </div>
+        <div id="pay_instruction" class="msg">
+            点击<a href="javascript:showPay(1);">微信扫码</a> 或<a href="javascript:showPay(2);">支付宝扫码</a> 支付后下载。
+        </div>
+        <div id="download" class="msg">
+            <a id="d_link">点击此处下载</a>
+        </div>
     </div>
 </div>
 <div class="modal" tabindex="-1" role="dialog">
@@ -96,8 +106,10 @@
                 $(".doc-name").text(result.data.name);
                 $("#ready").show();
                 $("#pay_instruction").show();
-                $("#download").show();
-                $("#d_link").attr("href","download?fileName="+result.data.fileName);
+                // $("#download").show();
+                // $("#d_link").attr("href","download?fileName="+result.data.fileName);
+                $("#preview").show();
+                $("#preview_img").attr("src","/previewImg?taskId="+id);
             }
         });
     }
@@ -124,6 +136,8 @@
                 if(json.success){
                     $("#ready").show();
                     $("#pay_instruction").show();
+                    $("#preview").show();
+                    $("#preview_img").attr("src","/previewImg?taskId="+id);
                     fileName=json.fileName;
                 }else{
                     $("#fail").show();
@@ -131,7 +145,9 @@
             }else if(json.type=="PAY_RESULT"){
                 if(json.success){
                     $('#payModal').modal('hide');
-                    $("#pay_instruction").hide();
+                    $("#preview").show();
+                    $("#ready").show();
+                    $("#download").show();
                     $("#d_link").attr("href","download?fileName="+json.link);
                 }
             }

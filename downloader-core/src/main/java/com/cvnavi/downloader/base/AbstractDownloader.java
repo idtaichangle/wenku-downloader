@@ -21,6 +21,9 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 @Log4j2
@@ -198,7 +201,7 @@ public abstract class AbstractDownloader {
     }
 
     protected  void writePdf() throws IOException, DocumentException {
-        if(new File(tmpDir+File.separator+"1.png").exists()){
+        if(Files.exists(Paths.get(tmpDir+File.separator+"1.png"))){
 
             String name= EncryptUtil.md5(url);;
             String outputFile=Config.FILES_DIR+File.separator+name+".pdf";
@@ -227,6 +230,8 @@ public abstract class AbstractDownloader {
             doc.close();
             writer.close();
             document.setFile(outputFile);
+            Files.copy(Paths.get(tmpDir+File.separator+"1.png"),
+                    Paths.get(Config.FILES_DIR+File.separator+name+".png"));
         }
     }
 }
