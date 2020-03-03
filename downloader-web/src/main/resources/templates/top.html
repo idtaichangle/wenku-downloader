@@ -1,6 +1,8 @@
-<div class="top" style="width: 100%;">
-    <div style="width: 100%;text-align: right;padding-top: 10px;padding-right: 20px;">
-        <a href="javascript:showLogin();">登录</a>
+<div class="top" style="width: 100%;" xmlns:th="http://www.thymeleaf.org">
+    <div class="top">
+        <div th:if="${session.email ne null}"><th:block th:text="${session.email}"></th:block>  <a href="javascript:logout();">退出</a></div>
+        <div th:if="${session.email eq null}"><a href="javascript:showLogin();">登录</a> <a href="javascript:showRegister();">注册</a> </div>
+
     </div>
 
     <div id="loginModal" class="modal" tabindex="-1" role="dialog" data-backdrop="static" >
@@ -32,22 +34,15 @@
         </div>
     </div>
     <script>
-        function showLogin() {
-            $('#loginModal').modal();
-        }
 
         $(document).ready(function() {
             $('#loginForm').on('submit', function(e){
                 if($("#email").val().indexOf('@')<0){
                     alert("请输入要正确的邮箱");
+                    e.preventDefault();
+                    return;
                 }
-                $.post("/login",
-                    {"email":$("#email").val(),"password":$("#password").val()},
-                    function (result) {
-                        if(result.success){
-                            $("#loginModal").modal('hide');
-                        }
-                    });
+                login();
                 e.preventDefault();
 
             });

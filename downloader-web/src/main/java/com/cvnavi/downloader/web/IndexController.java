@@ -88,7 +88,7 @@ public class IndexController extends BaseController{
                 return result(true,"文件已经下载",data);
             }
         }
-        return result(false,"文件已经尚未下载");
+        return result(false,"文件尚未下载");
     }
 
     @RequestMapping(value = "/download")
