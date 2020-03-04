@@ -12,9 +12,11 @@ CREATE INDEX index_email ON users(email);
 CREATE TABLE download_record
 (
 id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+user_id INTEGER,
 url VARCHAR(1024) NOT NULL,
 create_time BIGINT NOT NULL,
 file_id INTEGER,
+payment_time BIGINT NOT NULL,
 CONSTRAINT pk_dr PRIMARY KEY (id)
 );
 

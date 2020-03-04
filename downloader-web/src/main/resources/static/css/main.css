@@ -4,9 +4,22 @@
     text-align: center;
 }
 
-.top{
-    width: 100%;
-    text-align: right;
-    padding-top: 15px;
-    padding-right: 20px;
+.modal-body img{
+    width: 260px;
+}
+
+#preview_img{
+    width: 700px;
+}
+
+#qr_bg{
+    padding: 10px 30px 30px;
+}
+
+.qr_bg_alipay{
+    background-color: #009FE7;
+}
+
+.qr_bg_wx{
+    background-color: #22AB38;
 }

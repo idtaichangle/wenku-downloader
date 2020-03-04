@@ -24,7 +24,7 @@ public class UserController extends BaseController {
         }
         User user= UserDao.findByEmail(email);
         if(user!=null && EncryptUtil.md5(password).equals(user.getPassword())){
-            session.setAttribute("email",email);
+            session.setAttribute("user",user);
             return result(true," 登录成功");
         }
         return result(false," 登录失败");

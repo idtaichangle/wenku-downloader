@@ -85,7 +85,7 @@ public class DownloadRecordDao {
         try {
             Connection con = DBConnection.getInstance().get();
             if (con != null) {
-                String sql = "insert into  download_record(url,create_time,file_id) values(?,?,?)";
+                String sql = "insert into  download_record(user_id,url,create_time,file_id,payment_time) values(?,?,?,?,?)";
                 PreparedStatement st = con.prepareStatement(sql);
                 setStatement(st, record);
                 st.execute();
@@ -109,7 +109,7 @@ public class DownloadRecordDao {
         try {
             Connection con = DBConnection.getInstance().get();
             if (con != null) {
-                String sql = "update  download_record set url=?,create_time=?,file_id=? where id="+record.getId();
+                String sql = "update  download_record set user_id=?, url=?,create_time=?,file_id=?,payment_time=? where id="+record.getId();
                 PreparedStatement st = con.prepareStatement(sql);
                 setStatement(st, record);
                 st.execute();
@@ -123,17 +123,21 @@ public class DownloadRecordDao {
     }
 
     private static void setStatement(PreparedStatement st, DownloadRecord recored) throws SQLException {
-        st.setString(1,recored.getUrl());
-        st.setLong(2,recored.getCreateTime());
-        st.setInt(3,recored.getFileId());
+        st.setInt(1,recored.getUserId());
+        st.setString(2,recored.getUrl());
+        st.setLong(3,recored.getCreateTime());
+        st.setInt(4,recored.getFileId());
+        st.setLong(5,recored.getPaymentTime());
     }
 
 
     private static void fillValue(DownloadRecord dr,ResultSet rs) throws SQLException {
         dr.setId(rs.getInt("id"));
+        dr.setId(rs.getInt("user_id"));
         dr.setUrl(rs.getString("url"));
         dr.setCreateTime(rs.getLong("create_time"));
         dr.setFileId(rs.getInt("file_id"));
+        dr.setPaymentTime(rs.getLong("payment_time"));
     }
 
 }

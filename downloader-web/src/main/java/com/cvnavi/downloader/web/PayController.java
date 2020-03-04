@@ -4,6 +4,7 @@ import com.cvnavi.downloader.db.dao.DownloadRecordDao;
 import com.cvnavi.downloader.db.model.DownloadRecord;
 import com.cvnavi.downloader.util.EncryptUtil;
 import com.cvnavi.downloader.util.HttpRequestUtil;
+import com.cvnavi.downloader.util.ResourceReader;
 import com.cvnavi.downloader.web.ws.WebSocketServer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,10 +18,20 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 @RestController
 @Log4j2
 public class PayController  extends BaseController{
+
+    static float price=5.0f;
+    static {
+        try{
+            Properties p= ResourceReader.readProperties("application.properties");
+            price=Float.parseFloat(p.getProperty("price"));
+        }catch (Exception ex){}
+    }
+
 
     @RequestMapping(value = "/createPayOrder",method = RequestMethod.POST)
     public Object createPayOrder(int taskId,int payType){
@@ -29,7 +40,6 @@ public class PayController  extends BaseController{
         String url=Application.SYSTEM_PROPERTIES.getProperty("pay.create.order");
         String payId=System.currentTimeMillis()+"";
         String type=payType+"";//1=wx,2=alipay
-        String price="1.00";
         String param=record.getId()+"";
         String sign= EncryptUtil.md5(payId+param+type+price+Application.SYSTEM_PROPERTIES.getProperty("pay.secret"));
         String s="payId="+payId+"&type="+type+"&price="+price+"&sign="+sign+"&param="+param+"&isHtml=0";
@@ -40,7 +50,7 @@ public class PayController  extends BaseController{
             if(1==(Integer)map.get("code")){
                 HashMap<String,Object> m2= (HashMap<String, Object>) map.get("data");
                 HashMap<String,Object> data=new HashMap<>();
-                String img="img/"+(payType==1?"weixin":"alipay")+"/"+m2.get("reallyPrice")+".jpg";
+                String img="img/"+(payType==1?"weixin":"alipay")+"/"+m2.get("reallyPrice")+".png";
                 data.put("qr_img",img);
                 return result(true,"创建成功",data);
             }
@@ -60,13 +70,17 @@ public class PayController  extends BaseController{
 
         log.info("payNotify:payId="+payId+",type="+type+",price="+price+",reallyPrice="+reallyPrice+",param="+param);
 
+        try{
+            int recordId=Integer.parseInt(param);
+            DownloadRecord record= DownloadRecordDao.find(recordId);
+            if(record!=null){
+                record.setPaymentTime(System.currentTimeMillis());
+                DownloadRecordDao.update(record);
+            }
+        }catch (Exception ex){
+        }
+
         WebSocketServer.payCallback.payResult(true,Integer.parseInt(param));
         return "success";
     }
-
-    @RequestMapping(value = "/payResult",method = RequestMethod.GET)
-    public ModelAndView payResult(){
-        return new ModelAndView("pay");
-    }
-
 }

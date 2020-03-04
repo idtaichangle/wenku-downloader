@@ -1,8 +1,8 @@
 <nav class="navbar navbar-light" style="background-color: #e3f2fd;" xmlns:th="http://www.thymeleaf.org">
     <a class="navbar-brand" href="/">文档下载</a>
 
-    <div th:if="${session.email ne null}"><th:block th:text="${session.email}"></th:block>  <a href="javascript:logout();">退出</a></div>
-    <div th:if="${session.email eq null}"><a href="javascript:showLogin();">登录</a> <a href="javascript:showRegister();">注册</a> </div>
+    <div th:if="${session.user ne null}"><th:block th:text="${session.user.email}"></th:block>  <a href="javascript:doLogout();">退出</a></div>
+    <div th:if="${session.user eq null}"><a href="javascript:showLogin();">登录</a> <a href="javascript:showRegister();">注册</a> </div>
 </nav>
 
 <div id="loginModal" class="modal" tabindex="-1" role="dialog" data-backdrop="static" >
@@ -45,9 +45,9 @@
                 return;
             }
             if($("#dialogType").val()==1){
-                login();
+                loLogin();
             }else{
-                register();
+                doRegister();
             }
 
             e.preventDefault();

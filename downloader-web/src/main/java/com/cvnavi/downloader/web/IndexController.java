@@ -8,6 +8,7 @@ import com.cvnavi.downloader.db.dao.DownloadFileDao;
 import com.cvnavi.downloader.db.dao.DownloadRecordDao;
 import com.cvnavi.downloader.db.model.DownloadFile;
 import com.cvnavi.downloader.db.model.DownloadRecord;
+import com.cvnavi.downloader.db.model.User;
 import com.cvnavi.downloader.util.ResourceReader;
 import com.cvnavi.downloader.web.ws.WebSocketServer;
 import lombok.extern.log4j.Log4j2;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -43,9 +45,11 @@ public class IndexController extends BaseController{
     }
 
     @RequestMapping(value = "/preview",method = RequestMethod.POST)
-    public ModelAndView preview(String url){
+    public ModelAndView preview(String url, HttpSession session){
 
         HashMap<String,Object> model=new HashMap<>();
+        Object user=session.getAttribute("user");
+        model.put("login",(user!=null)?"true":"false");
 
         if(url!=null){
             url=url.toLowerCase().trim();
@@ -55,6 +59,9 @@ public class IndexController extends BaseController{
             if(DownloaderSelector.accept(url)){
                 DownloadFile df=DownloadFileDao.findByUrl(url);
                 DownloadRecord record=new DownloadRecord();
+                if(user!=null){
+                    record.setUserId(((User)user).getId());
+                }
                 record.setUrl(url);
                 record.setCreateTime(System.currentTimeMillis());
                 if(df!=null){
@@ -73,6 +80,7 @@ public class IndexController extends BaseController{
                 return new ModelAndView("preview",model);
             }
         }
+
 
         model.put("taskCreated",false);
         model.put("id",-1);
@@ -161,11 +169,4 @@ public class IndexController extends BaseController{
         Collection<DownloadRecord> list= DownloadRecordDao.list(pageIndex,pageSize);
         return new ModelAndView("download_record","list",list);
     }
-
-
-    @RequestMapping("/test")
-    public ModelAndView test(){
-        return new ModelAndView("test");
-    }
-
 }
