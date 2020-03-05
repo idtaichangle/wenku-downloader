@@ -25,10 +25,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.*;
 
 @RestController
 @Log4j2
@@ -88,7 +85,7 @@ public class IndexController extends BaseController{
     }
 
     @GetMapping(value="/previewImg", produces = MediaType.IMAGE_PNG_VALUE)
-    public @ResponseBody byte[] getPreviewImg(int taskId,HttpServletResponse resp){
+    public @ResponseBody byte[] getPreviewImg(int taskId){
 
         DownloadRecord dr=DownloadRecordDao.find(taskId);
         if(dr!=null && dr.getFileId()>0){
@@ -105,8 +102,8 @@ public class IndexController extends BaseController{
         return ResourceReader.readFile("static/img/not_found.png");
     }
 
-    @RequestMapping("/queryTaskFile")
-    public Object queryTaskFile(int taskId){
+    @RequestMapping("/queryTaskStatus")
+    public Object queryTaskStatus(int taskId, HttpSession session){
         DownloadRecord record=DownloadRecordDao.find(taskId);
         if(record!=null){
             DownloadFile df=DownloadFileDao.findByUrl(record.getUrl());
@@ -114,6 +111,20 @@ public class IndexController extends BaseController{
                 HashMap<String,Object> data=new HashMap<>();
                 data.put("name",df.getName());
                 data.put("fileName",df.getEncryptName());
+                boolean paid=false;
+                User user=(User) session.getAttribute("user");
+                if(user!=null){
+                    Collection<DownloadRecord> list=DownloadRecordDao.findByUrl(record.getUrl(),user.getId());
+                    for(DownloadRecord r:list){
+                        if(r.getPaymentTime()>0){
+                            paid=true;
+                        }
+                    }
+                }
+                data.put("paid",paid);
+                if(paid){
+                    data.put("link",df.getEncryptName());
+                }
                 return result(true,"文件已经下载",data);
             }
         }

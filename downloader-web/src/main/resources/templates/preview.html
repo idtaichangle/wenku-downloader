@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>文档下载</title>
     <script th:replace="head"></script>
+    <script type="text/javascript" src="js/qrcode.min.js"></script>
     <style>
         .msg{
             display: none;
@@ -38,7 +39,7 @@
             请<a href="javascript:showLogin();">登录</a>后下载。
         </div>
         <div id="pay_instruction" class="msg">
-            点击<a href="javascript:showPay(1);">微信扫码</a> 或<a href="javascript:showPay(2);">支付宝扫码</a> 支付后下载。
+            点击<a href="javascript:showPay(1);">微信扫码</a> 或<a href="javascript:showPay(2);">支付宝扫码</a> 支付后下载。下载的文件格式为pdf。
         </div>
         <div id="download" class="msg">
             <a id="d_link">点击此处下载</a>
@@ -52,8 +53,8 @@
         <div class="modal-content">
             <div class="modal-body" style="text-align: center;">
                 <div id="qr_bg">
-                    <img id="recommand">
-                    <img id="qr">
+                    <img id="recommand" style="margin-bottom: 10px">
+                    <div id="qr"></div>
                 </div>
                 <div>请在<a id="timeout">5:00</a>内完成支付。</div>
             </div>

@@ -32,7 +32,7 @@ public class UserController extends BaseController {
 
     @RequestMapping("/logout")
     public Object logout(HttpSession session){
-        session.removeAttribute("email");
+        session.removeAttribute("user");
         return result(true," 退出成功");
     }
 

@@ -5,8 +5,8 @@
 }
 
 .modal-body img{
-    width: 260px;
-}
+     width: 236px;
+ }
 
 #preview_img{
     width: 700px;
@@ -14,6 +14,11 @@
 
 #qr_bg{
     padding: 10px 30px 30px;
+}
+
+#qr{
+    background:#FFF;
+    padding:10px
 }
 
 .qr_bg_alipay{

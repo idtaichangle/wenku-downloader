@@ -52,7 +52,10 @@ function showPay(payType) {
     clearInterval(timer);
     $.post("createPayOrder",{"taskId":id,"payType":payType},function (result) {
         if(result.success){
-            $("#qr").attr("src",result.data.qr_img);
+            $("#qr").html('');
+            var qrcode = new QRCode(document.getElementById("qr"));
+            qrcode.makeCode(result.data.payUrl);
+
             $('#payModal').modal();
             startCountDown();
             $('#payModal').on('hidden.bs.modal', function (e) {
@@ -63,7 +66,7 @@ function showPay(payType) {
 }
 
 function queryTask() {
-    $.post("queryTaskFile",{"taskId":id},function (result) {
+    $.post("queryTaskStatus",{"taskId":id},function (result) {
         if(result.success){
             $(".msg").hide();
             $("#preview").show();
@@ -73,7 +76,12 @@ function queryTask() {
             if(!login){
                 $("#login_required").show();
             }else{
-                $("#pay_instruction").show();
+                if(result.data.paid){
+                    $("#download").show();
+                    $("#d_link").attr("href","download?fileName="+result.data.link);
+                }else{
+                    $("#pay_instruction").show();
+                }
             }
         }
     });
@@ -128,9 +136,20 @@ function startCountDown() {
         var t= parseInt($("#timeout").text().split(':')[0])*60+parseInt($("#timeout").text().split(':')[1]);
         t=t-1;
         $("#timeout").text(Math.floor(t/60)+":"+(t%60));
+        checkPayStatus(id);
         if(t<=0){
             clearInterval(timer);
             $('#payModal').modal('hide');
         }
     },1000);
+}
+
+function checkPayStatus(id) {
+    $.post("checkPayStatus?taskId="+id,function (result) {
+        if(result.success){
+            clearInterval(timer);
+            $('#payModal').modal('hide');
+            window.location.reload();
+        }
+    });
 }

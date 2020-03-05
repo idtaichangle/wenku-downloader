@@ -9,6 +9,7 @@ import com.cvnavi.downloader.web.ws.WebSocketServer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,14 +45,15 @@ public class PayController  extends BaseController{
         String sign= EncryptUtil.md5(payId+param+type+price+Application.SYSTEM_PROPERTIES.getProperty("pay.secret"));
         String s="payId="+payId+"&type="+type+"&price="+price+"&sign="+sign+"&param="+param+"&isHtml=0";
         String result=HttpRequestUtil.sendPost(url,s);
+        log.info(result);
         ObjectMapper mapper = new ObjectMapper();
         try {
             Map<String, Object> map=mapper.readValue(result, Map.class);
             if(1==(Integer)map.get("code")){
                 HashMap<String,Object> m2= (HashMap<String, Object>) map.get("data");
                 HashMap<String,Object> data=new HashMap<>();
-                String img="img/"+(payType==1?"weixin":"alipay")+"/"+m2.get("reallyPrice")+".png";
-                data.put("qr_img",img);
+                data.put("payUrl",m2.get("payUrl"));
+                data.put("reallyPrice",m2.get("reallyPrice"));
                 return result(true,"创建成功",data);
             }
 
@@ -82,5 +84,15 @@ public class PayController  extends BaseController{
 
         WebSocketServer.payCallback.payResult(true,Integer.parseInt(param));
         return "success";
+    }
+
+    @PostMapping("checkPayStatus")
+    public Object checkPayStatus(int taskId){
+
+        DownloadRecord record= DownloadRecordDao.find(taskId);
+        if(record!=null && record.getPaymentTime()>0){
+            return result(true,"已经支付");
+        }
+        return result(false,"尚未支付");
     }
 }

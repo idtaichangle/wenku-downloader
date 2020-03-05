@@ -57,20 +57,23 @@ public class DownloadRecordDao {
         return dr;
     }
 
-    public static DownloadRecord findByUrl(String url) {
-        DownloadRecord dr=null;
+    public static Collection<DownloadRecord> findByUrl(String url,Integer userId) {
+        List<DownloadRecord> list=new ArrayList<>();
         try {
             Connection con = DBConnection.getInstance().get();
             if (con != null) {
                 Statement st = con.createStatement();
                 String sql = "select * from download_record where url=?";
+                if(userId!=null){
+                    sql+=" and user_id="+userId;
+                }
                 PreparedStatement ps=con.prepareStatement(sql);
                 ps.setString(1,url);
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    dr=new DownloadRecord();
+                    DownloadRecord dr=new DownloadRecord();
                     fillValue(dr,rs);
-                    break;
+                    list.add(dr);
                 }
                 rs.close();
                 st.close();
@@ -78,7 +81,7 @@ public class DownloadRecordDao {
         } catch (Exception e) {
             log.error(e);
         }
-        return dr;
+        return list;
     }
 
     public static synchronized boolean insert(DownloadRecord record) {
@@ -133,7 +136,7 @@ public class DownloadRecordDao {
 
     private static void fillValue(DownloadRecord dr,ResultSet rs) throws SQLException {
         dr.setId(rs.getInt("id"));
-        dr.setId(rs.getInt("user_id"));
+        dr.setUserId(rs.getInt("user_id"));
         dr.setUrl(rs.getString("url"));
         dr.setCreateTime(rs.getLong("create_time"));
         dr.setFileId(rs.getInt("file_id"));
