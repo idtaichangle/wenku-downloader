@@ -1,6 +1,9 @@
 package com.cvnavi.downloader.base;
 
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * 下载http://www.doc88.com的文档
  */
@@ -15,4 +18,5 @@ public class Doc88Downloader extends AbstractDownloader{
                 "www.doc88.com"
         };
     }
+
 }

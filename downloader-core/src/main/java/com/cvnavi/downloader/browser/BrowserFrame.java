@@ -8,8 +8,11 @@ import com.teamdev.jxbrowser.event.Observer;
 import com.teamdev.jxbrowser.navigation.Navigation;
 import com.teamdev.jxbrowser.navigation.event.LoadFinished;
 import com.teamdev.jxbrowser.navigation.event.NavigationEvent;
+import com.teamdev.jxbrowser.net.UrlRequest;
+import com.teamdev.jxbrowser.net.event.RequestCompleted;
 import com.teamdev.jxbrowser.view.swing.BrowserView;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import javax.swing.*;
@@ -27,6 +30,10 @@ public class BrowserFrame {
     private JFrame frame=null;
     private DownloaderQueue queue;
 
+    @Getter @Setter
+    private Observer<RequestCompleted> requestCompletedObserver;
+
+
     static BrowserFrame browserFrame=new BrowserFrame();
 
     public static BrowserFrame instance(){
@@ -36,6 +43,11 @@ public class BrowserFrame {
     private BrowserFrame(){
         frame=new JFrame();
         browser=JxBrowserEngine.getEngine().newBrowser();
+        JxBrowserEngine.getEngine().network().on(RequestCompleted.class, (event)->{
+            if(requestCompletedObserver!=null){
+                requestCompletedObserver.on(event);
+            }
+        });
         browserView=BrowserView.newInstance(browser);
         queue=new DownloaderQueue();
     }

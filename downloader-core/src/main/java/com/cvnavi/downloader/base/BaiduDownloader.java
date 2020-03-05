@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 下载baidu wenku的文档
@@ -20,6 +22,15 @@ public class BaiduDownloader extends AbstractDownloader {
         return new String[]{
                 "wenku.baidu.com"
         };
+    }
+
+    @Override
+    protected void detectPageReady(String url) {
+        Matcher m= Pattern.compile("(?<=&page=)\\d+(?=&)").matcher(url);
+        if(m.find()){
+            int page=Integer.parseInt(m.group(0));
+            pageReady.add(page);
+        }
     }
 
     @Override

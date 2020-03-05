@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,6 +28,7 @@ public class DownloadTask{
     private int id;
     @Getter @Setter
     private String url;
+    private AbstractDownloader downloader;
     @Getter @Setter
     private DownloaderCallback callback;
     @Getter @Setter
@@ -38,10 +40,13 @@ public class DownloadTask{
 
     public void download(){
         DownloadFile record= DownloadFileDao.findByUrl(getUrl());
-        if(record!=null){
+        if(record!=null && Files.exists(Paths.get(Config.FILES_DIR+ File.separator+record.getEncryptName()+".pdf"))){
             invokeCallback(true,record.getEncryptName());
         }else{
             downloading=false;
+            downloader= DownloaderSelector.select(url);
+            BrowserFrame.instance().setRequestCompletedObserver(downloader.getRequestCompletedObserver());
+
             BrowserFrame.instance().browse(getUrl(),(event)->{
                 if(!downloading){//防止多次出发LoadFinished事件。
                     downloading=true;
@@ -60,7 +65,6 @@ public class DownloadTask{
             Thread.sleep(3000);
         } catch (InterruptedException e) {
         }
-        AbstractDownloader downloader= DownloaderSelector.select(url);
         if(downloader!=null){
             try {
                 log.debug("begin download "+url);

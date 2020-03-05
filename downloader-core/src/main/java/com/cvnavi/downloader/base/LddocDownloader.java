@@ -1,6 +1,8 @@
 package com.cvnavi.downloader.base;
 
 import java.awt.image.BufferedImage;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.cvnavi.downloader.util.ImageUtil.isLightGray;
 
@@ -18,6 +20,15 @@ public class LddocDownloader extends AbstractDownloader {
         return new String[]{
                 "www.lddoc.cn"
         };
+    }
+
+    @Override
+    protected void detectPageReady(String url) {
+        Matcher m= Pattern.compile("(?<=-.{12})\\d+(?=.gif)").matcher(url);
+        if(m.find()){
+            int page=Integer.parseInt(m.group(0));
+            pageReady.add(page);
+        }
     }
 
     @Override
@@ -41,5 +52,4 @@ public class LddocDownloader extends AbstractDownloader {
             }
         }
     }
-
 }

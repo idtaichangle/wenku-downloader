@@ -10,7 +10,11 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.teamdev.jxbrowser.browser.Browser;
+import com.teamdev.jxbrowser.event.Observer;
+import com.teamdev.jxbrowser.net.UrlRequest;
+import com.teamdev.jxbrowser.net.event.RequestCompleted;
 import com.teamdev.jxbrowser.view.swing.BitmapUtil;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
@@ -25,9 +29,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Log4j2
-public abstract class AbstractDownloader {
+public abstract class AbstractDownloader{
 
     @Setter
     private String url;
@@ -42,7 +50,14 @@ public abstract class AbstractDownloader {
     float screenScale;
     int snapshotInterval=1000;
 
+    protected HashSet<Integer> pageReady=new HashSet<>();
+
     protected Browser browser= BrowserFrame.instance().getBrowser();
+
+    @Getter
+    private Observer<RequestCompleted> requestCompletedObserver= requestCompleted -> {
+        detectPageReady(requestCompleted.urlRequest().url());
+    };
 
     public String[] acceptHost(){
         return new String[0];
@@ -55,6 +70,10 @@ public abstract class AbstractDownloader {
         } catch (MalformedURLException e) {
         }
         return false;
+    }
+
+    protected void detectPageReady(String url){
+
     }
 
     /**
@@ -110,7 +129,7 @@ public abstract class AbstractDownloader {
         executeJavaScriptAsync("prepare();");
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
         }
 
@@ -146,14 +165,15 @@ public abstract class AbstractDownloader {
         BufferedImage pageImage=createImage();
 
         executeJavaScriptAsync("goToPage("+page+")");
-        Thread.sleep(snapshotInterval);
+
+        waitPageReady(page);
 
         int segment=(int)Math.ceil(pageHeight/windowHeight);
 
         for(int i=0;i<segment;i++){
             float scroll=i==0?0:windowHeight;;
             executeJavaScriptAsync("window.scrollBy(0,"+scroll+")");
-            Thread.sleep(200);
+            Thread.sleep(100);
             snapshot(pageImage,i);
         }
         writePageImage(pageImage,page);
@@ -232,6 +252,18 @@ public abstract class AbstractDownloader {
             document.setFile(outputFile);
             Files.copy(Paths.get(tmpDir+File.separator+"1.png"),
                     Paths.get(Config.FILES_DIR+File.separator+name+".png"));
+        }
+    }
+
+    private void waitPageReady(int page){
+        for(int i=0;i<snapshotInterval/100;i++){
+            if(pageReady.contains(page)){
+                break;
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+            }
         }
     }
 }

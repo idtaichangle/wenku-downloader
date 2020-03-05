@@ -2,6 +2,8 @@ package com.cvnavi.downloader.base;
 
 
 import java.awt.image.BufferedImage;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.cvnavi.downloader.util.ImageUtil.isLightGray;
 
@@ -18,6 +20,21 @@ public class DocinDownloader extends AbstractDownloader{
         return new String[]{
                 "www.docin.com"
         };
+    }
+
+    @Override
+    protected void detectPageReady(String url) {
+        Matcher m= Pattern.compile("(?<=_)\\d+(?=.docin)").matcher(url);
+        if(m.find()){
+            int page=Integer.parseInt(m.group(0))+1;// 第一页从0开始
+            pageReady.add(page);
+        }
+
+        m= Pattern.compile("(?<=&pageno=)\\d+(?=&)").matcher(url);
+        if(m.find()){
+            int page=Integer.parseInt(m.group(0));
+            pageReady.add(page);
+        }
     }
 
     @Override
@@ -41,5 +58,4 @@ public class DocinDownloader extends AbstractDownloader{
             }
         }
     }
-
 }
