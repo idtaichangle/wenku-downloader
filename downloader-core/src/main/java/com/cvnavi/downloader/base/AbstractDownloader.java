@@ -25,9 +25,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -171,13 +169,16 @@ public abstract class AbstractDownloader{
         int segment=(int)Math.ceil(pageHeight/windowHeight);
 
         for(int i=0;i<segment;i++){
-            float scroll=i==0?0:windowHeight;;
-            executeJavaScriptAsync("window.scrollBy(0,"+scroll+")");
             Thread.sleep(100);
             snapshot(pageImage,i);
+            scrollPage();
         }
         writePageImage(pageImage,page);
         return pageImage;
+    }
+
+    protected void scrollPage() {
+        executeJavaScriptAsync("window.scrollBy(0,"+windowHeight+")");
     }
 
     protected String executeJavaScript(String script){
@@ -251,19 +252,17 @@ public abstract class AbstractDownloader{
             writer.close();
             document.setFile(outputFile);
             Files.copy(Paths.get(tmpDir+File.separator+"1.png"),
-                    Paths.get(Config.FILES_DIR+File.separator+name+".png"));
+                    Paths.get(Config.FILES_DIR+File.separator+name+".png"), StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
-    private void waitPageReady(int page){
+    protected void waitPageReady(int page) throws InterruptedException {
         for(int i=0;i<snapshotInterval/100;i++){
             if(pageReady.contains(page)){
                 break;
             }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-            }
+            Thread.sleep(100);
         }
+        Thread.sleep(1000);
     }
 }

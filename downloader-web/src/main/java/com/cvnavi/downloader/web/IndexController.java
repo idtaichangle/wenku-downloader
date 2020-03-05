@@ -107,7 +107,7 @@ public class IndexController extends BaseController{
         DownloadRecord record=DownloadRecordDao.find(taskId);
         if(record!=null){
             DownloadFile df=DownloadFileDao.findByUrl(record.getUrl());
-            if(df!=null){
+            if(df!=null && Files.exists(Paths.get(Config.FILES_DIR+File.separator+df.getEncryptName()+".pdf"))){
                 HashMap<String,Object> data=new HashMap<>();
                 data.put("name",df.getName());
                 data.put("fileName",df.getEncryptName());
