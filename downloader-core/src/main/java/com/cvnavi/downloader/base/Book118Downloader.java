@@ -16,9 +16,7 @@ public class Book118Downloader extends AbstractDownloader {
         };
     }
 
-    protected void scrollPage(int i) throws InterruptedException {
-        float scroll=i==0?0:windowHeight;;
-        executeJavaScriptAsync("$('iframe:last')[0].contentWindow.scrollBy(0,"+scroll+")");
-        Thread.sleep(100);
+    protected void scrollPage() {
+        executeJavaScriptAsync("$('iframe:last')[0].contentWindow.scrollBy(0,"+windowHeight+")");
     }
 }

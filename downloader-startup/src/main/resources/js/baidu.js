@@ -1,37 +1,64 @@
 
 function getDocType(){ return window.__fisData._data.WkInfo.DocInfo.docType;}
-function getDocName() {return $("#doc-tittle-0").text();}
-function getPageCount() {return $('.page-count').text().split('/')[1];}
-function getPageWidth() {return $('.reader-page-1').width();}
-function getPageHeight() {return $('.reader-page-1').height();}
-function getPageLeftMargin() {return $('.reader-page-1').offset().left;}
+function getDocName() {
+    if(getDocType().indexOf("ppt")>=0){
+        return window.__fisData._data.WkInfo.DocInfo.title;
+    }else{
+        return $("#doc-tittle-0").text();
+    }
+}
+function getPageCount() {
+    if(getDocType().indexOf("ppt")>=0){
+        return window.__fisData._data.WkInfo.DocInfo.totalPageNum;
+    }else{
+        return $('.page-count').text().split('/')[1];
+    }
+}
+function getPageWidth() {
+    if(getDocType().indexOf("ppt")>=0){
+        return $(".reader-pageNo-1 img").width();
+    }else{
+        return $('.reader-page-1').width();
+    }
+}
+function getPageHeight() {
+    if(getDocType().indexOf("ppt")>=0){
+        return $(".reader-pageNo-1 img").height();
+    }else{
+        return $('.reader-page-1').height();
+    }
+}
+function getPageLeftMargin() {
+    if(getDocType().indexOf("ppt")>=0){
+        return $(".reader-pageNo-1 img").offset().left;
+    }else{
+        return $('.reader-page-1').offset().left;
+    }
+}
 function snapshotInterval() {return 1000;}
 
 
 function prepare() {
-    $(".goBtn").click();
-    $(".top-right-fullScreen").remove();
-    $(".reader-fullScreen").click();
+    $(".moreBtn").click();// more
+    $(".top-right-fullScreen").click(); //full screen
+
     $(".banner-ad").remove();
     $(".fix-searchbar-wrap").remove();
     $(".reader-tools-bar-wrap").remove();
     $(".reader-back2top-wrap").remove();
-    $(".lastcell-dialog").remove();
+
+    $(".tag-tips").remove();
+    $("#doc-header-test").remove();
+    $(".lastcell-dialog").remove();// pop ad
+
+    $("#reader-container-inner-1").css('padding-bottom','1000px');
     $("body").css("overflow-x","hidden");
 
-    $("#doc_bottom_wrap").remove();
-
-    $("#next_doc_box").remove();
-
-    $(".ft").remove();
-
-    $("#ft").remove();
-    $(".tag-tips").remove();
-    $("#reader-container-inner-1").css('padding-bottom','1000px');
 
     setTimeout(function () {
+        $(".top-right-fullScreen").remove();
         goToPage(1);
-    },200);
+    },1000);
 }
 
 function goToPage(page) {
@@ -40,4 +67,4 @@ function goToPage(page) {
     }else{
         $('.reader-page-'+page)[0].scrollIntoView();
     }
-}1
+}

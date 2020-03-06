@@ -1,7 +1,14 @@
 
 function getDocType(){ return $("#Preview .title img").attr("src").split("productView-")[1].split("_")[0];}
 function getDocName() {return doc_title;}
-function getPageCount() {return $('#pagenumber').text().replace("页","").trim();}
+function getPageCount() {
+    var search=$(".view-dialog p:first").text().search("其中可免费阅读\\d");
+    if(search>=0){
+        return $(".view-dialog p:first").text().match("(?<=其中可免费阅读)\\d")[0]
+    }else{
+        return $('#pagenumber').text().replace(/[^0-9]/ig,"").trim();
+    }
+}
 function getPageWidth() {return $("iframe:last").contents().find("div[data-id=1]").width();}
 function getPageHeight() {return $("iframe:last").contents().find("div[data-id=1]").height();}
 function getPageLeftMargin() {return $("iframe:last").offset().left;}

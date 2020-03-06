@@ -78,7 +78,9 @@ function queryTask() {
             }else{
                 if(result.data.paid){
                     $("#download").show();
-                    $("#d_link").attr("href","download?fileName="+result.data.link);
+                    $("#d_link").click(function () {
+                        window.open("download?fileName="+result.data.link,"_blank");
+                    });
                 }else{
                     $("#pay_instruction").show();
                 }
@@ -124,10 +126,12 @@ function startWebsocket() {
                 $("#preview").show();
                 $("#ready").show();
                 $("#download").show();
-                $("#d_link").attr("href","download?fileName="+json.link);
+                $("#d_link").click(function () {
+                    window.open("download?fileName="+json.link,"_blank");
+                });
             }
         }
-    }
+    };
 }
 
 var timer;

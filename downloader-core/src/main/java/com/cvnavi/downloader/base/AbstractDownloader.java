@@ -11,7 +11,6 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.teamdev.jxbrowser.browser.Browser;
 import com.teamdev.jxbrowser.event.Observer;
-import com.teamdev.jxbrowser.net.UrlRequest;
 import com.teamdev.jxbrowser.net.event.RequestCompleted;
 import com.teamdev.jxbrowser.view.swing.BitmapUtil;
 import lombok.Getter;
@@ -22,15 +21,16 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @Log4j2
 public abstract class AbstractDownloader{
@@ -74,6 +74,16 @@ public abstract class AbstractDownloader{
 
     }
 
+    protected void waitPageReady(int page) throws InterruptedException {
+        for(int i=0;i<snapshotInterval/100;i++){
+            if(pageReady.contains(page)){
+                break;
+            }
+            Thread.sleep(100);
+        }
+        Thread.sleep(200);
+    }
+
     /**
      * 获取文档无数据。
      * @return
@@ -91,15 +101,11 @@ public abstract class AbstractDownloader{
         return meta;
     }
 
-    private  boolean scriptInserted=false;
-    private void insertScript(){
-        if(!scriptInserted){
-            String script=new String(ResourceReader.readFile(prepareJsFile));
-            if(script!=null && script.length()>0){
-                executeJavaScript(script);
-            }
+    protected void insertScript(){
+        String script=new String(ResourceReader.readFile(prepareJsFile));
+        if(script!=null && script.length()>0){
+            executeJavaScript(script);
         }
-        scriptInserted=true;
     }
 
 
@@ -137,11 +143,6 @@ public abstract class AbstractDownloader{
         snapshotInterval= (int) Float.parseFloat(executeJavaScript("snapshotInterval();"));
     }
 
-    public Document download() throws Exception {
-        Document.Meta meta = fetchMeta();
-        return download(meta);
-    }
-
     public Document download(Document.Meta meta) throws Exception {
         if(meta!=null){
             document.setMeta(meta);
@@ -169,7 +170,7 @@ public abstract class AbstractDownloader{
         int segment=(int)Math.ceil(pageHeight/windowHeight);
 
         for(int i=0;i<segment;i++){
-            Thread.sleep(100);
+            Thread.sleep(200);
             snapshot(pageImage,i);
             scrollPage();
         }
@@ -256,13 +257,4 @@ public abstract class AbstractDownloader{
         }
     }
 
-    protected void waitPageReady(int page) throws InterruptedException {
-        for(int i=0;i<snapshotInterval/100;i++){
-            if(pageReady.contains(page)){
-                break;
-            }
-            Thread.sleep(100);
-        }
-        Thread.sleep(1000);
-    }
 }

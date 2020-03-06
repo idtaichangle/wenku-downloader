@@ -14,6 +14,10 @@
             max-width: 350px;
         }
 
+        span{
+            display:block;
+        }
+
     </style>
 </head>
 <body>
@@ -31,19 +35,19 @@
     <div id="preview" class="msg" style="float: left;background:gray;padding: 8px;margin: 10px;">
         <img id="preview_img">
     </div>
-    <div style="padding: 20px">
-        <div id="ready" class="msg">
-            <i class="doc-name"></i> 已就绪。
-        </div>
-        <div id="login_required" class="msg">
+    <div style="padding: 20px;text-align: left">
+        <span id="ready" class="msg">
+            <i class="doc-name"></i> 已就绪。下载的文件格式为pdf。
+        </span>
+        <span id="login_required" class="msg">
             请<a href="javascript:showLogin();">登录</a>后下载。
-        </div>
-        <div id="pay_instruction" class="msg">
-            点击<a href="javascript:showPay(1);">微信扫码</a> 或<a href="javascript:showPay(2);">支付宝扫码</a> 支付后下载。下载的文件格式为pdf。
-        </div>
-        <div id="download" class="msg">
-            <a id="d_link">点击此处下载</a>
-        </div>
+        </span>
+        <span id="pay_instruction" class="msg">
+            点击<a href="javascript:showPay(1);">微信扫码</a> 或<a href="javascript:showPay(2);">支付宝扫码</a> 支付后下载。
+        </span>
+        <span id="download" class="msg">
+            <a id="d_link" href="javascript:">点击此处下载</a>
+        </span>
     </div>
 </div>
 

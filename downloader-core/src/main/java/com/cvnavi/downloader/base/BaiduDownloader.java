@@ -33,6 +33,16 @@ public class BaiduDownloader extends AbstractDownloader {
         }
     }
 
+    protected void waitPageReady(int page) throws InterruptedException {
+        for(int i=0;i<snapshotInterval/100;i++){
+            if(pageReady.contains(page)){
+                break;
+            }
+            Thread.sleep(100);
+        }
+        Thread.sleep(1000);
+    }
+
     @Override
     public BufferedImage downloadPage(int p) throws Exception {
         if(document.getMeta().getType().contains("ppt")){
@@ -45,7 +55,31 @@ public class BaiduDownloader extends AbstractDownloader {
                 return pageImage;
             }
         }else{
-            return super.downloadPage(p);
+            BufferedImage pageImage=createImage();
+            int p2=p%50;
+            if(p2==0){
+                p2=50;
+            }
+            executeJavaScriptAsync("goToPage("+p2+")");
+
+            waitPageReady(p2);
+
+            int segment=(int)Math.ceil(pageHeight/windowHeight);
+
+            for(int i=0;i<segment;i++){
+                Thread.sleep(200);
+                snapshot(pageImage,i);
+                scrollPage();
+            }
+            writePageImage(pageImage,p);
+
+            if(p%50==0 && document.getMeta().getTotalPage()>50){
+                executeJavaScriptAsync("$('#next-pageList-1').click()");
+                Thread.sleep(5000);
+                insertScript();
+                prepareDownload();
+            }
+            return pageImage;
         }
         return null;
     }
