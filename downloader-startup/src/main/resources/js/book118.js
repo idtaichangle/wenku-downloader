@@ -9,9 +9,28 @@ function getPageCount() {
         return $('#pagenumber').text().replace(/[^0-9]/ig,"").trim();
     }
 }
-function getPageWidth() {return $("iframe:last").contents().find("div[data-id=1]").width();}
-function getPageHeight() {return $("iframe:last").contents().find("div[data-id=1]").height();}
-function getPageLeftMargin() {return $("iframe:last").offset().left;}
+function getPageWidth() {
+    if($("iframe:last").contents().find("div[data-id=1]").length>0){
+        return $("iframe:last").contents().find("div[data-id=1]").width();
+    }else{
+        return $("iframe:last").contents().find("#p0 img").width();
+    }
+}
+function getPageHeight() {
+    if($("iframe:last").contents().find("div[data-id=1]").length>0){
+        return $("iframe:last").contents().find("div[data-id=1]").height();
+    }else{
+        return $("iframe:last").contents().find("#p0 img").height();
+    }
+}
+function getPageLeftMargin() {
+    if($("iframe:last").contents().find("div[data-id=1]").length>0){
+        return $("iframe:last").offset().left;
+    }else{
+        return $("iframe:last").offset().left+$("iframe:last").contents().find("#p0 img").offset().left;
+    }
+}
+
 function snapshotInterval() {return 2000;}
 
 
@@ -35,5 +54,9 @@ function prepare() {
 }
 
 function goToPage(page) {
-    $("iframe:last").contents().find("div[data-id="+page+"]")[0].scrollIntoView();
+    if($("iframe:last").contents().find("div[data-id=1]").length>0){
+        $("iframe:last").contents().find("div[data-id="+page+"]")[0].scrollIntoView();
+    }else{
+        $("iframe:last").contents().find("#p"+(page-1)+" img")[0].scrollIntoView();
+    }
 }
