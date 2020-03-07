@@ -179,7 +179,7 @@ public abstract class AbstractDownloader{
     }
 
     protected void scrollPage() {
-        executeJavaScriptAsync("window.scrollBy(0,"+windowHeight+")");
+        executeJavaScriptAsync("window.scrollBy(0,window.innerHeight)");
     }
 
     protected String executeJavaScript(String script){
