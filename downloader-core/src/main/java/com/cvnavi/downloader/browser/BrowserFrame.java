@@ -55,7 +55,9 @@ public class BrowserFrame {
     public void showFrame(){
 
         if(!frame.isShowing()){
-            frame.add(browserView, BorderLayout.CENTER);
+            browserView.setPreferredSize(new Dimension(1440,3000));
+            JScrollPane scrollPane=new JScrollPane(browserView);
+            frame.add(scrollPane, BorderLayout.CENTER);
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setSize(1440,900);
             frame.setVisible(true);

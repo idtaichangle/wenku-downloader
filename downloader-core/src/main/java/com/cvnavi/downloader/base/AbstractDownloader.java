@@ -83,7 +83,7 @@ public abstract class AbstractDownloader{
             }
             Thread.sleep(100);
         }
-        Thread.sleep(200);
+        Thread.sleep(100);
     }
 
     /**
@@ -175,7 +175,7 @@ public abstract class AbstractDownloader{
         int segment=(int)Math.ceil(pageHeight/windowHeight);
 
         for(int i=0;i<segment;i++){
-            Thread.sleep(200);
+            Thread.sleep(100);
             snapshot(pageImage,i);
             scrollPage();
         }

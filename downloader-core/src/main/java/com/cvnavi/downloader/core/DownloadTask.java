@@ -55,7 +55,7 @@ public class DownloadTask{
                 }
             });
             try {
-                thread.join(60*1000);
+                thread.join(600*1000);
             } catch (InterruptedException e) {
             }
         }
