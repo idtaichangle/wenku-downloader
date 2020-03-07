@@ -85,5 +85,12 @@ function goToPage(page) {
     }else if($("#view0").length>0){//ppt
         nextPage();
         goPage(page-1);
+        skipAnimation(page);
+    }
+}
+
+function skipAnimation(page) {// skip ppt animation,show all content
+    if($("#animt"+(page-1)).length>0){// exist animt in this page
+        $("#slide"+(page-1)+" div[id*=sp").show();
     }
 }
