@@ -42,29 +42,48 @@ function prepare() {
 function getPageWidth() {
     if($("div[data-id=1] img").length>0){
         return $("div[data-id=1] img").width();
-    }else{
+    }else if($("#p0 img").length>0){
         return $("#p0 img").width();
+    }else if($("#view0").length>0){//ppt
+        return $("#view0").width()*scaleFactor();
     }
+    return 0;
 }
+
 function getPageHeight() {
     if($("div[data-id=1] img").length>0){
         return $("div[data-id=1] img").height();
-    }else{
+    }else if($("#p0 img").length>0){
         return $("#p0 img").height();
+    }else if($("#view0").length>0){//ppt
+        return $("#view0").height()*scaleFactor();
     }
+    return 0;
 }
+
 function getPageLeftMargin() {
     if($("div[data-id=1] img").length>0){
         return $("div[data-id=1] img").offset().left;
-    }else{
+    }else if($("#p0 img").length>0){
         return $("#p0 img").offset().left;
+    }else if($("#view0").length>0){//ppt
+        return $("#view0").offset().left;
     }
+    return 0;
+}
+
+
+function scaleFactor() {
+    return $("#view").attr("style").match("(?<=scale\\().+(?=\\))")[0];
 }
 
 function goToPage(page) {
     if($("div[data-id=1] img").length>0){
         $("div[data-id="+page+"] img")[0].scrollIntoView();
-    }else{
+    }else if($("#p0 img").length>0){
         $("#p"+(page-1)+" img")[0].scrollIntoView();
+    }else if($("#view0").length>0){//ppt
+        nextPage();
+        goPage(page-1);
     }
 }
