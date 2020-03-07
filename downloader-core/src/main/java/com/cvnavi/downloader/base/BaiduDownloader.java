@@ -33,15 +33,6 @@ public class BaiduDownloader extends AbstractDownloader {
         }
     }
 
-    protected void waitPageReady(int page) throws InterruptedException {
-        for(int i=0;i<snapshotInterval/100;i++){
-            if(pageReady.contains(page)){
-                break;
-            }
-            Thread.sleep(100);
-        }
-        Thread.sleep(1000);
-    }
 
     @Override
     public BufferedImage downloadPage(int p) throws Exception {
@@ -67,7 +58,7 @@ public class BaiduDownloader extends AbstractDownloader {
             int segment=(int)Math.ceil(pageHeight/windowHeight);
 
             for(int i=0;i<segment;i++){
-                Thread.sleep(500);
+                Thread.sleep(200);
                 snapshot(pageImage,i);
                 scrollPage();
             }

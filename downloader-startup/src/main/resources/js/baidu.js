@@ -29,6 +29,7 @@ function prepare() {
     $(".tag-tips").remove();
     $("#doc-header-test").remove();
     $(".lastcell-dialog").remove();// pop ad
+    $("#docBubble").remove();
 
     $("#reader-container-inner-1").css('padding-bottom','1000px');
     $("body").css("overflow-x","hidden");

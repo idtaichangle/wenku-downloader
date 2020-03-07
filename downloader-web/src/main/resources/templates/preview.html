@@ -26,7 +26,7 @@
     <div style="padding: 20px">
         <img id="loading" class="msg" src="img/loading.gif">
         <div id="meta" class="msg">
-            正在准备文档，请耐心等待。如果文档页数较多，可能要等待几分钟。
+            正在准备<i class="doc-name"></i>，请耐心等待。正在准备第<b id="downloadingPage">1</b>页。
         </div>
         <div id="fail" class="msg">
             无法下载该文件。请稍后重试。<a href="/">返回首页</a>
@@ -72,6 +72,7 @@
 <script>
     var taskCreated=[[${taskCreated}]];
     var id=[[${id}]];
+    var docName="";
     var login=[[${login}]];
 
     $(function () {

@@ -25,9 +25,6 @@ public class DownloaderSelector {
                 break;
             }
         }
-        if(downloader!=null){
-            downloader.setUrl(url);
-        }
         return downloader;
     }
 

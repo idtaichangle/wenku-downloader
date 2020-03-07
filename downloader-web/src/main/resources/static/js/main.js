@@ -103,9 +103,17 @@ function startWebsocket() {
         $(".msg").hide();
         if(json.type=="FETCH_META_RESULT"){
             if(json.success){
-                $(".doc-name").text(json.meta.name);
+                docName=json.meta.name
+                $(".doc-name").text(docName);
                 $("#loading").show();
-                $("#meta").show()
+                $("#meta").show();
+            }
+        }else if(json.type=="DOWNLOAD_PROGRESS"){
+            if(json.success){
+                $(".doc-name").text(docName);
+                $("#loading").show();
+                $("#meta").show();
+                $("#downloadingPage").text(json.downloadingPage);
             }
         }else if(json.type=="FETCH_DOCUMENT_RESULT"){
             if(json.success){

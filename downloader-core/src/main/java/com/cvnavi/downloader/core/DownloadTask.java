@@ -45,6 +45,7 @@ public class DownloadTask{
         }else{
             downloading=false;
             downloader= DownloaderSelector.select(url);
+            downloader.setTask(this);
             BrowserFrame.instance().setRequestCompletedObserver(downloader.getRequestCompletedObserver());
 
             BrowserFrame.instance().browse(getUrl(),(event)->{

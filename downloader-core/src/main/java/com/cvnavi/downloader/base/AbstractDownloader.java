@@ -3,6 +3,8 @@ package com.cvnavi.downloader.base;
 import com.cvnavi.downloader.Config;
 import com.cvnavi.downloader.Document;
 import com.cvnavi.downloader.browser.BrowserFrame;
+import com.cvnavi.downloader.core.DownloadTask;
+import com.cvnavi.downloader.core.DownloaderCallback;
 import com.cvnavi.downloader.util.EncryptUtil;
 import com.cvnavi.downloader.util.ResourceReader;
 import com.itextpdf.text.DocumentException;
@@ -36,8 +38,8 @@ import java.util.HashSet;
 public abstract class AbstractDownloader{
 
     @Setter
-    private String url;
-    static String tmpDir= Config.TMP_DIR;
+    DownloadTask task;
+
     protected String prepareJsFile=null;
     protected Document document=new Document();
 
@@ -148,6 +150,9 @@ public abstract class AbstractDownloader{
             document.setMeta(meta);
             prepareDownload();
             for(int p=1;p<=meta.getTotalPage();p++){
+                if(task.getCallback()!=null){
+                    task.getCallback().downloadProgress(task.getId(),p);
+                }
                 BufferedImage pageImage=downloadPage(p);
                 if(pageImage!=null){
                     writePageImage(pageImage,p);
@@ -218,18 +223,18 @@ public abstract class AbstractDownloader{
     }
 
     protected void writePageImage(BufferedImage pageImage,int pageIndex) throws IOException {
-        File pageFile=new File(tmpDir+File.separator+pageIndex+".png");
+        File pageFile=new File(Config.TMP_DIR+File.separator+pageIndex+".png");
         ImageIO.write(pageImage, "PNG",pageFile);
     }
 
     protected  void writePdf() throws IOException, DocumentException {
-        if(Files.exists(Paths.get(tmpDir+File.separator+"1.png"))){
+        if(Files.exists(Paths.get(Config.TMP_DIR+File.separator+"1.png"))){
 
-            String name= EncryptUtil.md5(url);;
+            String name= EncryptUtil.md5(task.getUrl());;
             String outputFile=Config.FILES_DIR+File.separator+name+".pdf";
             FileOutputStream fos = new FileOutputStream(outputFile);
 
-            Image first=Image.getInstance(tmpDir+File.separator+"1.png");
+            Image first=Image.getInstance(Config.TMP_DIR+File.separator+"1.png");
             com.itextpdf.text.Rectangle r=first.getWidth()>first.getHeight()? PageSize.A4.rotate():PageSize.A4;
             com.itextpdf.text.Document doc = new com.itextpdf.text.Document(r,0,0,0,0);
             PdfWriter writer = PdfWriter.getInstance(doc, fos);
@@ -242,7 +247,7 @@ public abstract class AbstractDownloader{
 
             try{
                 for(int i=1;i<=document.getMeta().getTotalPage();i++){
-                    Image image=Image.getInstance(tmpDir+File.separator+i+".png");
+                    Image image=Image.getInstance(Config.TMP_DIR+File.separator+i+".png");
                     image.scaleAbsolute(documentWidth, documentHeight);
                     doc.add(image);
                 }
@@ -252,7 +257,7 @@ public abstract class AbstractDownloader{
             doc.close();
             writer.close();
             document.setFile(outputFile);
-            Files.copy(Paths.get(tmpDir+File.separator+"1.png"),
+            Files.copy(Paths.get(Config.TMP_DIR+File.separator+"1.png"),
                     Paths.get(Config.FILES_DIR+File.separator+name+".png"), StandardCopyOption.REPLACE_EXISTING);
         }
     }

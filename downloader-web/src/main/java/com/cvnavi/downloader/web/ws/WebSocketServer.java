@@ -48,6 +48,22 @@ public class WebSocketServer{
         }
 
         @Override
+        public void downloadProgress(int taskId, int downloadingPage) {
+            WebSocketServer server=webSocketMap.get(taskId);
+            if(server!=null){
+                try {
+                    HashMap<String,Object> map=new HashMap<>();
+                    map.put("type","DOWNLOAD_PROGRESS");
+                    map.put("success",true);
+                    map.put("downloadingPage",downloadingPage);
+                    server.sendMessage(toJsonStr(map));
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+        }
+
+        @Override
         public void documentReady(int taskId, boolean success, String fileName) {
             WebSocketServer server=webSocketMap.get(taskId);
             if(server!=null){
