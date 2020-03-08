@@ -2,9 +2,8 @@
 function getDocType(){ return $("#Preview .title img").attr("src").split("productView-")[1].split("_")[0];}
 function getDocName() {return doc_title;}
 function getPageCount() {
-    var search=$(".view-dialog p:first").text().search("其中可免费阅读\\d");
-    if(search>=0){
-        return $(".view-dialog p:first").text().match("(?<=其中可免费阅读)\\d")[0]
+    if($(".view-dialog-contentBody p:first font").length==3){
+        return $(".view-dialog-contentBody p:first font:eq(1)").text();// can not access full document.
     }else{
         return $('#pagenumber').text().replace(/[^0-9]/ig,"").trim();
     }
