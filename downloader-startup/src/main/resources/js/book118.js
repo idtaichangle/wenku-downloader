@@ -29,7 +29,7 @@ function prepare() {
         $("#alert").remove();
         $("#newView .bar").remove();
         $(".webpreview-recommend").remove();
-        $(".bd").css("padding-bottom","1000px");
+        $(".bd").css("padding-bottom","3000px");
         $("#webpreview_last_cel").click();
     },1000);
 

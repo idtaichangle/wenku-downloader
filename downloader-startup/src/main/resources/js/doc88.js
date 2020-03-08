@@ -14,7 +14,7 @@ function prepare() {
     $("#readshop").remove();
     $(".edit-tips").remove();
     $(".skintips").remove();
-    $("#pageContainer").css("padding-bottom","1000px");
+    $("#pageContainer").css("padding-bottom","3000px");
     setTimeout(function () {
         goToPage(1);
     },200);

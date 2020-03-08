@@ -45,7 +45,7 @@ public class DocinDownloader extends AbstractDownloader{
     }
 
     private void removeWatermark(BufferedImage bi){
-        for(int x = (int) (bi.getWidth()*0.1); x<bi.getWidth()*0.9; x++){
+        for(int x = (int) (bi.getWidth()*0.05); x<bi.getWidth()*0.95; x++){
             for(int y = (int) (bi.getHeight()*0.35); y<bi.getHeight()*0.7; y++){
 
                 if(isLightGray(bi.getRGB(x,y))

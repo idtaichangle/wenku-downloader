@@ -31,7 +31,7 @@ function prepare() {
     $(".lastcell-dialog").remove();// pop ad
     $("#docBubble").remove();
 
-    $("#reader-container-inner-1").css('padding-bottom','1000px');
+    $("#reader-container-inner-1").css('padding-bottom','3000px');
     $("body").css("overflow-x","hidden");
 
 
@@ -39,6 +39,7 @@ function prepare() {
         $(".top-right-fullScreen").remove();
         goToPage(1);
         window.scrollBy(0,window.innerHeight);
+        goToPage(1);
     },1000);
 }
 

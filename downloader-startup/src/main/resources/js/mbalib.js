@@ -10,7 +10,7 @@ function prepare() {
     $("#fullScreen").click();
     $(".ad-br").remove();
     $("#doc-fix").remove();
-    $(".reader-end-download").css("padding-top","1000px");
+    $(".reader-end-download").css("padding-top","3000px");
     $("body").css("overflow-x","hidden");
     $(".wjdx-close").click();
     setTimeout(function () {

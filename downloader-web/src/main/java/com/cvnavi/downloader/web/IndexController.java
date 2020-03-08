@@ -49,8 +49,8 @@ public class IndexController extends BaseController{
         model.put("login",(user!=null)?"true":"false");
 
         if(url!=null){
-            url=url.toLowerCase().trim();
-            if(!url.startsWith("http://") && !url.startsWith("https://")){
+            url=url.trim();
+            if(!url.toLowerCase().startsWith("http://") && !url.toLowerCase().startsWith("https://")){
                 url="http://"+url;
             }
             if(DownloaderSelector.accept(url)){

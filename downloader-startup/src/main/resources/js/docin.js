@@ -40,7 +40,7 @@ function prepare() {
     jQuery('.aside').remove();
     jQuery('.reader_tools_bar_wrap').remove();
     document.getElementById('page_1').scrollIntoView();
-    jQuery('#contentcontainer').css('padding-bottom','1000px');
+    jQuery('#contentcontainer').css('padding-bottom','3000px');
     setTimeout(function () {
         goToPage(1);
     },200);

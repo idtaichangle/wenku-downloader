@@ -83,7 +83,7 @@ public abstract class AbstractDownloader{
             }
             Thread.sleep(100);
         }
-        Thread.sleep(100);
+        Thread.sleep(500);
     }
 
     /**
@@ -122,7 +122,7 @@ public abstract class AbstractDownloader{
     public int  getPageCount(){
         String page=executeJavaScript("getPageCount();");
         if(page!=null && page.length()>0){
-            return Integer.parseInt(page);
+            return (int)Float.parseFloat(page);
         }
         return 0;
     }
@@ -177,7 +177,9 @@ public abstract class AbstractDownloader{
         for(int i=0;i<segment;i++){
             Thread.sleep(100);
             snapshot(pageImage,i);
-            scrollPage();
+            if(i+1<segment){
+                scrollPage();
+            }
         }
         writePageImage(pageImage,page);
         return pageImage;

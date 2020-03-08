@@ -58,9 +58,11 @@ public class BaiduDownloader extends AbstractDownloader {
             int segment=(int)Math.ceil(pageHeight/windowHeight);
 
             for(int i=0;i<segment;i++){
-                Thread.sleep(200);
+                Thread.sleep(100);
                 snapshot(pageImage,i);
-                scrollPage();
+                if(segment>1){
+                    scrollPage();
+                }
             }
             writePageImage(pageImage,p);
 

@@ -11,7 +11,7 @@ function prepare() {
     showmorepage();
     $("#readshop").remove();
     $("#boxright").remove();
-    $("#page_more").css("padding-bottom","1000px");
+    $("#page_more").css("padding-bottom","3000px");
     $("body").css("overflow-x","hidden");
     setTimeout(function () {
         goToPage(1);
