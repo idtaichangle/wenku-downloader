@@ -30,6 +30,7 @@ function prepare() {
         $(".webpreview-recommend").remove();
         $(".bd").css("padding-bottom","3000px");
         $("#webpreview_last_cel").click();
+        $("#ppt").css("margin","0");
     },1000);
 
     setTimeout(function () {
