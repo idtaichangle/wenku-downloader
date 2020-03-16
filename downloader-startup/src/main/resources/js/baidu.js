@@ -4,7 +4,8 @@ function getDocName() {
     if(getDocType().indexOf("ppt")>=0){
         return window.__fisData._data.WkInfo.DocInfo.title;
     }else{
-        return $("#doc-tittle-0").text();
+        // return $("#doc-tittle-0").text();
+        return window.__fisData._data.WkInfo.DocInfo.title;
     }
 }
 function getPageCount() {

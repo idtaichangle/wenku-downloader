@@ -90,8 +90,9 @@ public abstract class AbstractDownloader{
      * 获取文档无数据。
      * @return
      */
-    public Document.Meta fetchMeta(){
+    public Document.Meta fetchMeta() throws InterruptedException {
         insertScript();
+        Thread.sleep(200);
         Document.Meta meta=null;
         String name=getDocName();
         if(name!=null && name.length()>0){
@@ -106,7 +107,7 @@ public abstract class AbstractDownloader{
     protected void insertScript(){
         String script=new String(ResourceReader.readFile(prepareJsFile));
         if(script!=null && script.length()>0){
-            executeJavaScript(script);
+            executeJavaScriptAsync(script);
         }
     }
 
