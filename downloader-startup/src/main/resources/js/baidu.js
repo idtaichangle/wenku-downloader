@@ -1,20 +1,38 @@
 
-function getDocType(){ return window.__fisData._data.WkInfo.DocInfo.docType;}
+function getDocType(){
+    if(typeof pageData !== "undefined"){
+        return pageData.tplName;
+    }
+    return window.__fisData._data.WkInfo.DocInfo.docType;
+}
 function getDocName() {
-    if(getDocType().indexOf("ppt")>=0){
-        return window.__fisData._data.WkInfo.DocInfo.title;
-    }else{
-        // return $("#doc-tittle-0").text();
+    if(typeof pageData !== "undefined"){
+        return pageData.docInfo2019.doc_info.title;
+    }
+    if(typeof window.__fisData !== "undefined"){
         return window.__fisData._data.WkInfo.DocInfo.title;
     }
+    return $("#doc-tittle-0").text();
 }
+
 function getPageCount() {
-    if(getDocType().indexOf("ppt")>=0){
-        return window.__fisData._data.WkInfo.DocInfo.totalPageNum;
-    }else{
-        return $('.page-count').text().split('/')[1];
+    if(typeof pageData !== "undefined"){
+        return pageData.docInfo2019.doc_info.download_count;
     }
+    if(typeof pageData !== "undefined"){
+        return pageData.readerInfo2019.free_page;
+    }
+    if(typeof window.__fisData !== "undefined"){
+        if(window.__fisData._data.WkInfo.DocInfo.freepagenum>0){
+            return window.__fisData._data.WkInfo.DocInfo.freepagenum;
+        }
+        else{
+            return window.__fisData._data.WkInfo.DocInfo.totalPageNum;
+        }
+    }
+    return $('.page-count').text().split('/')[1];
 }
+
 function snapshotInterval() {return 1000;}
 
 
