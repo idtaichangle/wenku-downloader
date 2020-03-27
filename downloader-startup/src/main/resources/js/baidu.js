@@ -17,9 +17,6 @@ function getDocName() {
 
 function getPageCount() {
     if(typeof pageData !== "undefined"){
-        return pageData.docInfo2019.doc_info.download_count;
-    }
-    if(typeof pageData !== "undefined"){
         return pageData.readerInfo2019.free_page;
     }
     if(typeof window.__fisData !== "undefined"){
@@ -38,8 +35,12 @@ function snapshotInterval() {return 1000;}
 
 function prepare() {
     $(".moreBtn").click();// more
+	$(".fold-page-text .read-all").click();
     $(".top-right-fullScreen").click(); //full screen
+	$("div.full-screen").click();
 
+	$("div.reader-topbar").remove();
+	$("div.content-wrapper").css("padding","0px");
     $(".banner-ad").remove();
     $(".fix-searchbar-wrap").remove();
     $(".reader-tools-bar-wrap").remove();
@@ -49,6 +50,7 @@ function prepare() {
     $("#doc-header-test").remove();
     $(".lastcell-dialog").remove();// pop ad
     $("#docBubble").remove();
+	$(".try-end-fold-page").remove();
 
     $("#reader-container-inner-1").css('padding-bottom','3000px');
     $("body").css("overflow-x","hidden");
@@ -63,31 +65,44 @@ function prepare() {
 }
 
 function getPageWidth() {
-    if(getDocType().indexOf("ppt")>=0){
+    if($(".reader-pageNo-1 img").length>0){
         return $(".reader-pageNo-1 img").width();
-    }else{
+    }else if($('.reader-page-1').length>0){
         return $('.reader-page-1').width();
+    }else if($('#pageNo-1').length>0){
+        return $('#pageNo-1').width();
     }
+	return 0;
 }
+
 function getPageHeight() {
-    if(getDocType().indexOf("ppt")>=0){
+	if($(".reader-pageNo-1 img").length>0){
         return $(".reader-pageNo-1 img").height();
-    }else{
+    }else if($('.reader-page-1').length>0){
         return $('.reader-page-1').height();
+    }else if($('#pageNo-1').length>0){
+        return $('#pageNo-1').height();
     }
+	return 0;
 }
+
 function getPageLeftMargin() {
-    if(getDocType().indexOf("ppt")>=0){
+	if($(".reader-pageNo-1 img").length>0){
         return $(".reader-pageNo-1 img").offset().left;
-    }else{
+    }else if($('.reader-page-1').length>0){
         return $('.reader-page-1').offset().left;
+    }else if($('#pageNo-1').length>0){
+        return $('#pageNo-1').offset().left;
     }
+	return 0;
 }
 
 function goToPage(page) {
-    if(getDocType().indexOf("ppt")>=0){
+	if($(".reader-pageNo-"+page).length>0){
         $(".reader-pageNo-"+page)[0].scrollIntoView();
-    }else{
+    }else if($('.reader-page-'+page).length>0){
         $('.reader-page-'+page)[0].scrollIntoView();
+    }else if($('#pageNo-'+page).length>0){
+        $('#pageNo-'+page)[0].scrollIntoView();
     }
 }
