@@ -6,6 +6,7 @@ import com.cvnavi.downloader.core.DownloaderQueue;
 import com.teamdev.jxbrowser.browser.Browser;
 import com.teamdev.jxbrowser.event.Observer;
 import com.teamdev.jxbrowser.navigation.Navigation;
+import com.teamdev.jxbrowser.navigation.event.FrameLoadFinished;
 import com.teamdev.jxbrowser.navigation.event.LoadFinished;
 import com.teamdev.jxbrowser.navigation.event.NavigationEvent;
 import com.teamdev.jxbrowser.net.UrlRequest;
@@ -17,6 +18,8 @@ import lombok.extern.log4j.Log4j2;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -40,8 +43,21 @@ public class BrowserFrame {
         return browserFrame;
     }
 
+    private boolean firstShow=false;
+
     private BrowserFrame(){
-        frame=new JFrame();
+        frame=new JFrame(){
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                if(!firstShow){
+                    firstShow=true;
+                    SwingUtilities.invokeLater(()->{
+                        onFrameShow();
+                    });
+                }
+            }
+        };
         browser=JxBrowserEngine.getEngine().newBrowser();
         JxBrowserEngine.getEngine().network().on(RequestCompleted.class, (event)->{
             if(requestCompletedObserver!=null){
@@ -55,18 +71,17 @@ public class BrowserFrame {
     public void showFrame(){
 
         if(!frame.isShowing()){
-            browserView.setPreferredSize(new Dimension(1440,3000));
-            JScrollPane scrollPane=new JScrollPane(browserView);
-            frame.add(scrollPane, BorderLayout.CENTER);
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setSize(1440,900);
             frame.setVisible(true);
-            frame.addWindowStateListener((e)->{
-                frame.remove(browserView);
-                frame.add(browserView, BorderLayout.CENTER);
-                frame.revalidate();
-            });
         }
+    }
+
+    private void onFrameShow(){
+        browserView.setPreferredSize(new Dimension(frame.getWidth()-40,3000));
+        JScrollPane scrollPane=new JScrollPane(browserView);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.revalidate();
     }
 
     public synchronized void browse(String url){
@@ -80,6 +95,9 @@ public class BrowserFrame {
             nav.on(LoadFinished.class, (event)->{
                 latch.countDown();
             });
+//            nav.on(FrameLoadFinished.class, (event)->{
+//                latch.countDown();
+//            });
             nav.loadUrl(url);
 
             if(observer!=null){
@@ -95,21 +113,6 @@ public class BrowserFrame {
     public void submitDownloadTask(DownloadTask task){
         queue.offer(task);
     }
-
-//    public BufferedImage downloadFirstPage(){
-//        downloader=DownloaderSelector.select(url,null);
-//        if(downloader!=null){
-//            clearTmpDir();
-//            downloader.prepareDownload();
-//            try {
-//                Thread.sleep(1000);
-//                BufferedImage pageImage=downloader.downloadPage(1);
-//                return pageImage;
-//            } catch (Exception e) {
-//            }
-//        }
-//        return null;
-//    }
 
     public static void main(String[] args) {
         BrowserFrame.instance().showFrame();

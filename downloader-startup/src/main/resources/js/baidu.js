@@ -30,7 +30,7 @@ function getPageCount() {
     return $('.page-count').text().split('/')[1];
 }
 
-function snapshotInterval() {return 1000;}
+function snapshotInterval() {return 2000;}
 
 
 function prepare() {
@@ -98,6 +98,7 @@ function getPageLeftMargin() {
 }
 
 function goToPage(page) {
+    $(".hx-warp").remove();
 	if($(".reader-pageNo-"+page).length>0){
         $(".reader-pageNo-"+page)[0].scrollIntoView();
     }else if($('.reader-page-'+page).length>0){
