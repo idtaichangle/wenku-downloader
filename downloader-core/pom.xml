@@ -20,7 +20,7 @@
     </repositories>
 
     <properties>
-        <jxbrowser.version>7.5</jxbrowser.version>
+        <jxbrowser.version>7.11</jxbrowser.version>
     </properties>
 
     <dependencies>

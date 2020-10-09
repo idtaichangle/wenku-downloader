@@ -14,7 +14,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.teamdev.jxbrowser.browser.Browser;
 import com.teamdev.jxbrowser.event.Observer;
 import com.teamdev.jxbrowser.net.event.RequestCompleted;
-import com.teamdev.jxbrowser.view.swing.BitmapUtil;
+import com.teamdev.jxbrowser.view.swing.graphics.BitmapImage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -131,7 +131,7 @@ public abstract class AbstractDownloader{
 
     public  void prepareDownload() {
         windowHeight=getJsFloat("window.innerHeight");
-        screenScale= BitmapUtil.toBufferedImage(browser.bitmap()).getWidth()/getJsFloat("window.innerWidth");
+        screenScale= BitmapImage.toToolkit(browser.bitmap()).getWidth()/getJsFloat("window.innerWidth");
 
         executeJavaScriptAsync("prepare();");
 
@@ -217,7 +217,7 @@ public abstract class AbstractDownloader{
 
     protected void snapshot(BufferedImage pageImage,int segment){
         Graphics g= pageImage.createGraphics();
-        BufferedImage shot= BitmapUtil.toBufferedImage(browser.bitmap());
+        BufferedImage shot= BitmapImage.toToolkit(browser.bitmap());
         float height=shot.getHeight();
         shot=shot.getSubimage((int) (pageLeftMargin*screenScale),0, pageImage.getWidth(),shot.getHeight());
 

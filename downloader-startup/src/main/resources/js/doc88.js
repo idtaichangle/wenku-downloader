@@ -21,5 +21,6 @@ function prepare() {
 }
 
 function goToPage(page) {
+    $(".dk-bg").parent().remove();
     $("#outer_page_"+page)[0].scrollIntoView();
 }

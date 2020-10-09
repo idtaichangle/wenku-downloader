@@ -9,23 +9,25 @@ import java.io.File;
 
 public class Startup {
 
-    public static String DOWNLOADER_HOME;
+    public static String APP_HOME;
     static {
         setHome();
     }
 
+
     public static void setHome(){
-        if(System.getProperty("DOWNLOADER_HOME")!=null){
-            DOWNLOADER_HOME=System.getProperty("DOWNLOADER_HOME");
+        if(System.getProperty("APP_HOME")!=null){
+            APP_HOME =System.getProperty("APP_HOME");
         }else{
-            String file=Startup.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+            String file= Startup.class.getProtectionDomain().getCodeSource().getLocation().getFile();
             if(file.endsWith(".jar")){
-                DOWNLOADER_HOME=new File(file).getParentFile().getParent();
+                APP_HOME =new File(file).getParentFile().getParent();
             }else if(file.endsWith("/classes/")){
-                DOWNLOADER_HOME=new File(file).getParent();
+                APP_HOME =new File(file).getParent();
             }
         }
-        System.setProperty("DOWNLOADER_HOME",DOWNLOADER_HOME);
+        System.setProperty("APP_HOME", APP_HOME);
+        System.setProperty("user.dir", APP_HOME);
     }
 
     public static void main(String[] args) {
