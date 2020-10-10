@@ -23,9 +23,9 @@ public class Config {
     }
 
     static void init(){
-        if(System.getProperty("DOWNLOADER_HOME")!=null){
-            FILES_DIR =System.getProperty("DOWNLOADER_HOME")+ File.separator+"files";
-            TMP_DIR =System.getProperty("DOWNLOADER_HOME")+ File.separator+"tmp";
+        if(System.getProperty("APP_HOME")!=null){
+            FILES_DIR =System.getProperty("APP_HOME")+ File.separator+"files";
+            TMP_DIR =System.getProperty("APP_HOME")+ File.separator+"tmp";
         }else{
             FILES_DIR =System.getProperty("java.io.tmpdir")+ File.separator+"wenku-downloader";
             TMP_DIR =System.getProperty("java.io.tmpdir")+ File.separator+"wenku-downloader"+File.separator+"tmp";

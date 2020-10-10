@@ -8,9 +8,14 @@ function snapshotInterval() {return 5000;}
 
 
 function prepare() {
+    $("#frscreen").click();
     $("#continueButton").click();
     $("#zoomInButton").click();
-    $("#frscreen").click();
+    $("#zoomInButton").click();
+    $("#zoomInButton").click();
+    $("#mainPanel").css("padding","0px");
+    $("#header").remove();
+    $("#readshop").remove();
     $("#readshop").remove();
     $(".edit-tips").remove();
     $(".skintips").remove();

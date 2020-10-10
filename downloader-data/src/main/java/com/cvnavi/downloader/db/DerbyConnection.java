@@ -17,7 +17,7 @@ public class DerbyConnection extends DBConnection {
     protected static Connection con;
 
     static {
-        String home=System.getProperty("DOWNLOADER_HOME");
+        String home=System.getProperty("APP_HOME");
         if(home!=null){
             String dbHome=home+File.separator+"db";
             File d=new File(dbHome);
