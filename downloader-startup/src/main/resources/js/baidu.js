@@ -34,30 +34,36 @@ function snapshotInterval() {return 2000;}
 
 
 function prepare() {
-    $(".moreBtn").click();// more
-	$(".fold-page-text .read-all").click();
-    $(".top-right-fullScreen").click(); //full screen
-	$("div.full-screen").click();
+    c(".moreBtn");
+    c(".fold-page-text .read-all");
+    c(".top-right-fullScreen");
+    c("div.full-screen");
+    c(".moreBtn");
 
-	$("div.reader-topbar").remove();
-	$("div.content-wrapper").css("padding","0px");
-    $(".banner-ad").remove();
-    $(".fix-searchbar-wrap").remove();
-    $(".reader-tools-bar-wrap").remove();
-    $(".reader-back2top-wrap").remove();
+    r("div.reader-topbar");
+    r(".banner-ad");
+    r(".fix-searchbar-wrap");
+    r(".reader-tools-bar-wrap");
+    r(".reader-back2top-wrap");
 
-    $(".tag-tips").remove();
-    $("#doc-header-test").remove();
-    $(".lastcell-dialog").remove();// pop ad
-    $("#docBubble").remove();
-	$(".try-end-fold-page").remove();
+    r(".tag-tips");
+    r("#doc-header-test");
+    r(".lastcell-dialog");// pop ad
+    r("#docBubble");
+    r(".try-end-fold-page");
 
-    $("#reader-container-inner-1").css('padding-bottom','3000px');
-    $("body").css("overflow-x","hidden");
+
+    if(s("div.content-wrapper")!=null){
+        s("div.content-wrapper").style.padding=0;
+    }
+    if(s("#reader-container-inner-1")!=null){
+        s("#reader-container-inner-1").style.paddingBottom=3000;
+    }
+    s("body").style.overflowX="hidden";
 
 
     setTimeout(function () {
-        $(".top-right-fullScreen").remove();
+        r(".top-right-fullScreen");
         goToPage(1);
         window.scrollBy(0,window.innerHeight);
         goToPage(1);
@@ -65,45 +71,63 @@ function prepare() {
 }
 
 function getPageWidth() {
-    if($(".reader-pageNo-1 img").length>0){
-        return $(".reader-pageNo-1 img").width();
-    }else if($('.reader-page-1').length>0){
-        return $('.reader-page-1').width();
-    }else if($('#pageNo-1').length>0){
-        return $('#pageNo-1').width();
+    if(s(".reader-pageNo-1 img")!=null){
+        return s(".reader-pageNo-1 img").clientWidth;
+    }else if(s('.reader-page-1')!=null){
+        return s('.reader-page-1').clientWidth;
+    }else if(s("#pageNo-1")!=null){
+        return s("#pageNo-1").clientWidth;
     }
-	return 0;
+    return 0;
 }
 
 function getPageHeight() {
-	if($(".reader-pageNo-1 img").length>0){
-        return $(".reader-pageNo-1 img").height();
-    }else if($('.reader-page-1').length>0){
-        return $('.reader-page-1').height();
-    }else if($('#pageNo-1').length>0){
-        return $('#pageNo-1').height();
+    if(s(".reader-pageNo-1 img")!=null){
+        return s(".reader-pageNo-1 img").clientHeight;
+    }else if(s('.reader-page-1')!=null){
+        return s('.reader-page-1').clientHeight;
+    }else if(s("#pageNo-1")!=null){
+        return s("#pageNo-1").clientHeight;
     }
-	return 0;
+    return 0;
 }
 
 function getPageLeftMargin() {
-	if($(".reader-pageNo-1 img").length>0){
-        return $(".reader-pageNo-1 img").offset().left;
-    }else if($('.reader-page-1').length>0){
-        return $('.reader-page-1').offset().left;
-    }else if($('#pageNo-1').length>0){
-        return $('#pageNo-1').offset().left;
+    if(s(".reader-pageNo-1 img")!=null){
+        return s(".reader-pageNo-1 img").getBoundingClientRect().x;
+    }else if(s('.reader-page-1')!=null){
+        return s('.reader-page-1').getBoundingClientRect().x;
+    }else if(s("#pageNo-1")!=null){
+        return s("#pageNo-1").getBoundingClientRect().x;
     }
-	return 0;
+    return 0;
 }
 
 function goToPage(page) {
-    $(".hx-warp").remove();
-	if($(".reader-pageNo-"+page).length>0){
-        $(".reader-pageNo-"+page)[0].scrollIntoView();
-    }else if($('.reader-page-'+page).length>0){
-        $('.reader-page-'+page)[0].scrollIntoView();
-    }else if($('#pageNo-'+page).length>0){
-        $('#pageNo-'+page)[0].scrollIntoView();
+    r(".hx-warp");
+    c("#TANGRAM__PSP_4__closeBtn");//登录提示框
+    c("span.read-all");//继续阅读
+    if(s(".reader-pageNo-"+page)!=null){
+        s(".reader-pageNo-"+page).scrollIntoView();
+    }else if(s('.reader-page-'+page)!=null){
+        s('.reader-page-'+page).scrollIntoView();
+    }else if(s('#pageNo-'+page)!=null){
+        s('#pageNo-'+page).scrollIntoView();
+    }
+}
+
+function s(selector){
+    return document.querySelector(selector);
+}
+
+function c(selector){
+    if(s(selector)!=null){
+        s(selector).click();
+    }
+}
+
+function  r(selector){
+    if(s(selector)!=null){
+        s(selector).remove();
     }
 }
