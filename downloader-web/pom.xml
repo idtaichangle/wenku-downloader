@@ -12,7 +12,7 @@
     <artifactId>downloader-web</artifactId>
 
     <properties>
-        <spring-boot.version>2.2.4.RELEASE</spring-boot.version>
+        <spring-boot.version>2.5.12</spring-boot.version>
         <jackson.version>2.10.2</jackson.version>
     </properties>
 
